@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { apiRequest } from '@/lib/api/client';
+import { apiRequest } from '../../../lib/api/client.js';
 import styles from './about.module.css';
 
 // Import OrgStructure dynamically to avoid SSR issues with IntersectionObserver/ResizeObserver
@@ -17,6 +17,27 @@ const OrgStructure = dynamic(() => import('./OrgStructure'), {
       <div className={styles.skeletonRow} />
       <div className={styles.skeletonRow} />
     </div>
+  ),
+});
+
+// Import BoardMembers dynamically
+const BoardMembers = dynamic(() => import('./BoardMembers'), {
+  ssr: false,
+  loading: () => (
+    <section id="board" className={styles.boardSection} aria-labelledby="board-title">
+      <div className={styles.container}>
+        <div className={styles.sectionHeading}>
+          <h2 id="board-title">Currently Involved Board Members</h2>
+        </div>
+        <div className={styles.tableWrapper}>
+          <div className={styles.boardTableSkeleton} aria-hidden="true">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className={styles.skeletonRow} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   ),
 });
 
@@ -152,6 +173,7 @@ export default function AboutPageClient() {
 
     return () => window.clearInterval(timer);
   }, []);
+  // console.log(process.env.NEXT_PUBLIC_API_URL);
 
   useEffect(() => {
     const sections = document.querySelectorAll('[data-about-section]');
@@ -185,6 +207,8 @@ export default function AboutPageClient() {
       try {
         setBoardMembersLoading(true);
         setBoardMembersError(null);
+        console.log(process.env.NEXT_PUBLIC_API_URL);
+
         const data = await apiRequest('/board-members');
         if (active) {
           setBoardMembers(data || []);
@@ -291,98 +315,12 @@ export default function AboutPageClient() {
           </section>
 
           {/* BOARD MEMBERS */}
-          <section
-            id="board"
-            data-about-section
-            className={`${styles.boardSection} ${visibleSections.has('board') ? styles.sectionVisible : ''}`}
-            aria-labelledby="board-title"
-          >
-            <div className={styles.container}>
-              <div className={styles.sectionHeading}>
-                <h2 id="board-title">Currently Involved Board Members</h2>
-                <p>
-                  Our board members bring diverse experience and expertise,
-                  guiding Relief Nepal&rsquo;s vision and ensuring effective
-                  governance and accountability.
-                </p>
-              </div>
-
-              {boardMembersLoading ? (
-                <div className={styles.tableWrapper}>
-                  <div className={styles.boardTableSkeleton} aria-hidden="true">
-                    {[...Array(7)].map((_, i) => (
-                      <div key={i} className={styles.skeletonRow} />
-                    ))}
-                  </div>
-                </div>
-              ) : boardMembersError ? (
-                <div className={styles.errorMessage}>
-                  <p>Unable to load board members. Please try again later.</p>
-                  <button
-                    onClick={() => window.location.reload()}
-                    className={styles.retryButton}
-                  >
-                    Retry
-                  </button>
-                </div>
-              ) : boardMembers.length === 0 ? (
-                <p className={styles.emptyMessage}>
-                  No board members available at this time.
-                </p>
-              ) : (
-                <div className={styles.tableWrapper}>
-                  <table className={styles.boardTable}>
-                    <thead>
-                      <tr>
-                        <th scope="col">SN</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Qualification</th>
-                        <th scope="col">Sectoral Expertise</th>
-                        <th scope="col">Designation</th>
-                        <th scope="col">Contact</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Years of Experience</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {boardMembers.map((member) => (
-                        <tr key={member.id || member.sn}>
-                          <td>
-                            <span className={styles.memberNumber}>
-                              {member.sn}
-                            </span>
-                          </td>
-                          <td className={styles.memberName}>{member.name}</td>
-                          <td>{member.qualification}</td>
-                          <td>{member.expertise}</td>
-                          <td>{member.designation}</td>
-                          <td>
-                            <a href={`tel:${member.contact}`}>
-                              {member.contact}
-                            </a>
-                          </td>
-                          <td>
-                            <a href={`mailto:${member.email}`}>
-                              {member.email}
-                            </a>
-                          </td>
-                          <td>{member.experience}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-
-              {boardMembers.length > 0 && (
-                <p className={styles.tableNote}>
-                  Contact information is displayed as provided in the board
-                  member records.
-                </p>
-              )}
-            </div>
-          </section>
+          <BoardMembers
+            members={boardMembers}
+            loading={boardMembersLoading}
+            error={boardMembersError}
+            visible={visibleSections.has('board')}
+          />
 
           {/* ORGANIZATIONAL STRUCTURE - Interactive */}
           <section

@@ -1,6 +1,7 @@
 import RnHero from '../../components/home/RnHero.jsx';
 import DistrictMapSection from '../../components/geography/DistrictMapSection.jsx';
 import HomePageClient from './HomePageClient';
+import PartnerMarquee from '../../components/layout/PartnerMarquee.tsx';
 import JsonLd from '../../components/seo/JsonLd.jsx';
 import { organizationSchema, breadcrumbSchema } from '../../lib/seo.js';
 
@@ -8,9 +9,9 @@ const homeHeroSlides = [
   { src: '/images/Picture7.png', caption: 'Community-led development' },
   { src: '/images/plant.png', caption: 'Environmental conservation' },
   { src: '/images/Trackshoot-support.jpg', caption: 'Community support' },
-  { src: '/images/girls.group.jpg', caption: "Girls' group activities" },
+  { src: '/images/girls.group.png', caption: "Girls' group activities" },
   { src: '/images/handwashing.jpg', caption: 'Safe hygiene practices' },
-  { src: '/images/health.youth.jpg', caption: 'Youth health awareness' },
+  { src: '/images/heath.youth.jpg', caption: 'Youth health awareness' },
   { src: '/images/dhara.jpg', caption: 'Access to clean water' },
   { src: '/images/grp.holding.png', caption: 'Community participation' },
   { src: '/images/protection.child.jpg', caption: 'Child protection' },
@@ -62,6 +63,8 @@ export default function HomePage() {
         <DistrictMapSection />
 
         <HomePageClient />
+
+        <PartnerMarquee />
       </main>
     </>
   );

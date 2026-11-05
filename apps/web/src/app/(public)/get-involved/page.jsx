@@ -5,18 +5,18 @@ import { breadcrumbSchema, organizationSchema, faqSchema } from '../../../lib/se
 export const metadata = {
   title: 'Get Involved | Support, Volunteer, Join Relief Nepal',
   description:
-    'Discover ways to get involved with Relief Nepal: support our work, explore vacancies, or become a member. Join us in building self-reliant, equitable communities across Nepal.',
+    'Discover ways to get involved with Relief Nepal: support our work, explore procurement opportunities, or become a member. Join us in building self-reliant, equitable communities across Nepal.',
   openGraph: {
     title: 'Get Involved | Relief Nepal',
     description:
-      'Support our work, explore vacancies, or become a member. Join us in building equitable communities.',
+      'Support our work, explore procurement opportunities, or become a member. Join us in building equitable communities.',
     type: 'website',
     images: [
       {
         url: '/images/og-get-involved.jpg',
         width: 1200,
         height: 630,
-        alt: 'Get involved with Relief Nepal - Support, volunteer, become a member',
+        alt: 'Get involved with Relief Nepal - Support, procurement, become a member',
       },
     ],
   },
@@ -24,7 +24,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Get Involved | Relief Nepal',
     description:
-      'Support our work, explore vacancies, or become a member. Join us in building equitable communities.',
+      'Support our work, explore procurement opportunities, or become a member. Join us in building equitable communities.',
     images: ['/images/og-get-involved.jpg'],
   },
   alternates: {
@@ -41,11 +41,11 @@ const opportunities = [
     'Contact Relief Nepal',
   ],
   [
-    'vacancies',
-    'Vacancies and opportunities',
-    'Current job openings and calls for applications will be posted on the notices page after review.',
-    '/notice',
-    'See current notices',
+    'procurement',
+    'Procurement opportunities',
+    'Current tenders, calls for proposals, and procurement notices for goods, services, and works.',
+    '/procurement',
+    'View procurement',
   ],
   [
     'membership',
@@ -69,8 +69,8 @@ export default function GetInvolvedPage() {
             answer: 'You can support Relief Nepal by contacting our team through the contact page to discuss giving options, volunteering, or partnership opportunities.',
           },
           {
-            question: 'Are there job openings at Relief Nepal?',
-            answer: 'Current job openings and calls for applications are posted on the notices page. Check the Vacancies section for the latest opportunities.',
+            question: 'Are there procurement opportunities at Relief Nepal?',
+            answer: 'Current tenders, calls for proposals, and procurement notices are posted on the procurement page. Check regularly for the latest opportunities for goods, services, and works.',
           },
           {
             question: 'How do I become a member of Relief Nepal?',

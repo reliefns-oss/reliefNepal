@@ -40,7 +40,7 @@ export const navigationGroups = [
     href: '/get-involved',
     links: [
       ['Support', '/get-involved#support'],
-      ['Vacancies', '/vacancies'],
+      ['Procurement', '/procurement'],
       ['Membership', '/get-involved#membership'],
     ],
   },

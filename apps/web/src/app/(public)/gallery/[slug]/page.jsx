@@ -12,7 +12,8 @@ async function getProjectForGallery(slug) {
     { cache: 'no-store' },
   );
   if (!response.ok) return null;
-  const items = await response.json();
+  const payload = await response.json();
+  const items = payload?.data;
   if (!Array.isArray(items)) return null;
   const projectItems = items.filter(
     (item) => item.project?.slug?.toLowerCase() === slug.toLowerCase(),

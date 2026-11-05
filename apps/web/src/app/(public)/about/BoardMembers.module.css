@@ -1,0 +1,297 @@
+.section {
+  padding: 6rem 0;
+}
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.sectionTitle {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 800;
+  color: #064e2a;
+  margin: 0 0 1rem;
+  letter-spacing: -0.02em;
+}
+.sectionDescription {
+  font-size: 1.125rem;
+  color: #475569;
+  max-width: 60ch;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  opacity: 0;
+  animation: gridFadeIn 0.6s ease-out forwards;
+}
+.gridComplete {
+  /* All cards visible */
+}
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@keyframes gridFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.card {
+  --stagger: 0;
+  --card-index: 0;
+  perspective: 1000px;
+}
+.cardVisible {
+  animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--stagger) * 1s);
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+}
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.cardHovered {
+  /* Hover state handled by CSS */
+}
+.cardInner {
+  position: relative;
+  background: white;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.05),
+    0 2px 4px -2px rgb(0 0 0 / 0.03);
+  border: 1px solid #e5e7eb;
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s ease;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+}
+.card:hover .cardInner,
+.cardHovered .cardInner {
+  transform: translateY(-8px);
+  box-shadow:
+    0 25px 50px -12px rgb(6 78 42 / 0.15),
+    0 12px 24px -8px rgb(6 78 42 / 0.1);
+  border-color: #86efac;
+}
+.card:focus-within .cardInner {
+  outline: 3px solid #22c55e;
+  outline-offset: 4px;
+}
+.photoWrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border: 4px solid white;
+  box-shadow:
+    0 0 0 2px #dcfce7,
+    0 10px 30px -10px rgb(6 78 42 / 0.3);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+.card:hover .photoWrapper,
+.cardHovered .photoWrapper {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 0 2px #86efac,
+    0 15px 40px -10px rgb(6 78 42 / 0.4);
+}
+.photo {
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card:hover .photo,
+.cardHovered .photo {
+  transform: scale(1.1);
+}
+.avatar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #166534;
+}
+.designationBadge {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #064e2a;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px -2px rgb(6 78 42 / 0.4);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.card:hover .designationBadge,
+.cardHovered .designationBadge {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+.content {
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.serialNumber {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #166534;
+  opacity: 0.6;
+}
+.name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.3;
+}
+.detail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+.icon {
+  width: 16px;
+  height: 16px;
+  color: #166534;
+  flex-shrink: 0;
+}
+.contactGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+.contactItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #475569;
+  text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+.contactItem:hover {
+  background: #dcfce7;
+  color: #166534;
+  transform: translateX(4px);
+}
+.glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 1.5rem;
+  background: radial-gradient(ellipse at center, rgb(34 197 94 / 0.08) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+.card:hover .glow,
+.cardHovered .glow {
+  opacity: 1;
+}
+.emptyMessage {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 1.125rem;
+  padding: 3rem;
+}
+.tableNote {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+.tableWrapper {
+  margin-top: 1rem;
+}
+.boardTableSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.skeletonRow {
+  height: 120px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.75rem;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.errorMessage {
+  text-align: center;
+  padding: 3rem;
+  color: #ef4444;
+}
+.retryButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #064e2a;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.retryButton:hover {
+  background: #166534;
+}

@@ -1,0 +1,190 @@
+:root {
+  /* Relief Nepal Brand Colors */
+  --color-brand-50: #f0f5f0;
+  --color-brand-100: #dceadc;
+  --color-brand-200: #bcd5bc;
+  --color-brand-300: #8eb98f;
+  --color-brand-400: #5d9660;
+  --color-brand-500: #3a7a3e;
+  --color-brand-600: #2d6230;
+  --color-brand-700: #224a25;
+  --color-brand-800: #1a3b1e;
+  --color-brand-900: #143017;
+  --color-brand-950: #0a1a0c;
+
+  /* Semantic Colors */
+  --color-primary: var(--color-brand-600);
+  --color-primary-hover: var(--color-brand-700);
+  --color-primary-light: var(--color-brand-50);
+  --color-primary-border: var(--color-brand-200);
+
+  --color-success: #166534;
+  --color-success-light: #dcfce7;
+  --color-success-border: #86efac;
+
+  --color-warning: #854d0e;
+  --color-warning-light: #fef9c3;
+  --color-warning-border: #fde047;
+
+  --color-error: #991b1b;
+  --color-error-light: #fef2f2;
+  --color-error-border: #fca5a5;
+
+  --color-info: #1e40af;
+  --color-info-light: #dbeafe;
+  --color-info-border: #93c5fd;
+
+  /* Neutral Colors */
+  --color-bg-primary: #f8faf8;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #f0f4f0;
+  --color-bg-hover: #e8eee8;
+  --color-bg-active: #dceadc;
+
+  --color-text-primary: #1a2a1a;
+  --color-text-secondary: #4a5a4a;
+  --color-text-tertiary: #7a8a7a;
+  --color-text-quaternary: #aabbaa;
+  --color-text-inverse: #ffffff;
+
+  --color-border-light: #e8eee8;
+  --color-border-medium: #dceadc;
+  --color-border-strong: #bcd5bc;
+
+  /* Shadow System */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+
+  /* Border Radius */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Spacing Scale */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* Typography Scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* Transitions */
+  --transition-fast: 100ms ease;
+  --transition-normal: 150ms ease;
+  --transition-slow: 200ms ease;
+  --transition-slower: 300ms ease;
+
+  /* Z-Index Scale */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+  --z-toast: 800;
+
+  /* Sidebar */
+  --sidebar-width: 280px;
+  --sidebar-width-collapsed: 72px;
+  --header-height: 64px;
+}
+
+.dark {
+  --color-bg-primary: #0f1a0f;
+  --color-bg-secondary: #162416;
+  --color-bg-tertiary: #1a2e1a;
+  --color-bg-hover: #1e351e;
+  --color-bg-active: #254025;
+
+  --color-text-primary: #f0f5f0;
+  --color-text-secondary: #cdd5cd;
+  --color-text-tertiary: #9aa99a;
+  --color-text-quaternary: #6b7b6b;
+
+  --color-border-light: #2a3f2a;
+  --color-border-medium: #3a553a;
+  --color-border-strong: #4a6b4a;
+
+  --color-primary-light: #1a3b1e;
+  --color-primary-border: #3a553a;
+
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+}
+
+/* Focus Ring */
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+/* Scrollbar Styling */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-medium) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-medium);
+  border-radius: 3px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-border-strong);
+}
+
+/* Admin layout responsive styles */
+@media (max-width: 1023px) {
+  .admin-main {
+    margin-left: 0 !important;
+  }
+}

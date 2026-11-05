@@ -93,6 +93,22 @@ export default function ContactPage() {
                 </a>
               </div>
             </div>
+
+            {/* Google Maps */}
+            <div className="mt-8 rounded-2xl border border-forest-100 bg-white overflow-hidden shadow-sm">
+              <div className="aspect-video w-full">
+                <iframe
+                  title="Relief Nepal Head Office Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3548.2120242284313!2d85.9132123758443!3d27.21249227647014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb8ca13cebecd7%3A0xc9c3490a75bc8925!2sRelief%20Nepal!5e0!3m2!1sen!2snp!4v1793859183190!5m2!1sen!2snp"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </div>
           </div>
           <div className="rounded-2xl border border-forest-100 bg-white p-6 shadow-sm sm:p-9">
             <h2 className="mb-6 text-2xl font-semibold">Send us a message</h2>

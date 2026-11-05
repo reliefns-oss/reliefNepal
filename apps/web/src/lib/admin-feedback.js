@@ -6,7 +6,7 @@ export function getAdminErrorMessage(error) {
     return 'Your session has expired. Sign in again to continue.';
   if (/not authorized|permission|forbidden/i.test(message))
     return 'You do not have permission to do this. Ask an administrator to check your access.';
-  if (/uploads? are not configured|cloudinary/i.test(message))
+  if (/uploads? are not configured/i.test(message))
     return 'The image could not be uploaded. Ask an administrator to check the image upload settings, then try again.';
   if (
     /service is unavailable|failed to fetch|networkerror|network request/i.test(
@@ -21,7 +21,7 @@ export function getAdminErrorMessage(error) {
 export function getImageUploadErrorMessage(error) {
   const message = error instanceof Error ? error.message : '';
 
-  if (/uploads? are not configured|cloudinary/i.test(message))
+  if (/uploads? are not configured/i.test(message))
     return 'The image could not be uploaded. Ask an administrator to check the image upload settings, then try again.';
   if (/failed to fetch|networkerror|network request/i.test(message))
     return 'The upload was interrupted. Check your connection and try again.';

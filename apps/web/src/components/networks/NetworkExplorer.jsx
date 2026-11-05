@@ -3,7 +3,15 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ArrowUpRight, Globe2, Handshake, MapPin, Network, Search } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Globe2,
+  Handshake,
+  MapPin,
+  Network,
+  Search,
+} from 'lucide-react';
 import { apiRequest } from '../../lib/api/client.js';
 import styles from './network.module.css';
 
@@ -71,10 +79,13 @@ function PartnerMark({ partner, className = '', size = 'default' }) {
     size === 'small'
       ? { width: 42, height: 38 }
       : size === 'node'
-      ? { width: 80, height: 80 }
-      : { width: 54, height: 42 };
+        ? { width: 80, height: 80 }
+        : { width: 54, height: 42 };
   return (
-    <span className={`${styles.partnerMark} ${className} ${styles[`partnerMark_${size}`]}`} aria-hidden="true">
+    <span
+      className={`${styles.partnerMark} ${className} ${styles[`partnerMark_${size}`]}`}
+      aria-hidden="true"
+    >
       {partner.logo_url ? (
         <Image
           src={partner.logo_url}
@@ -117,11 +128,7 @@ function PartnerCard({ partner, index }) {
           </span>
         )}
       </div>
-      <ArrowUpRight
-        className={styles.cardArrow}
-        size={19}
-        aria-hidden="true"
-      />
+      <ArrowUpRight className={styles.cardArrow} size={19} aria-hidden="true" />
     </Link>
   );
 }
@@ -149,7 +156,9 @@ function ConnectionLine({ partner, index, isActive, color, isMobile }) {
       strokeDasharray="8 6"
       strokeLinecap="round"
       style={{
-        filter: isActive ? 'drop-shadow(0 0 8px currentColor)' : 'drop-shadow(0 0 2px currentColor)',
+        filter: isActive
+          ? 'drop-shadow(0 0 8px currentColor)'
+          : 'drop-shadow(0 0 2px currentColor)',
       }}
     />
   );
@@ -174,13 +183,11 @@ function HubNode({ isMobile }) {
         <Image
           src="/images/logo.jpg"
           alt=""
-          width={isMobile ? 63 : 74}
-          height={isMobile ? 51 : 62}
+          width={isMobile ? 63 : 100}
+          height={isMobile ? 51 : 100}
           priority
         />
       </span>
-      <strong>Relief Nepal</strong>
-      <small>Working alongside communities</small>
     </div>
   );
 }
@@ -260,7 +267,10 @@ function FilterButton({ category, isActive, count, onClick }) {
 
 function StateCard({ icon, title, description, action }) {
   return (
-    <div className={styles.stateCard} role={icon === 'alert' ? 'alert' : 'status'}>
+    <div
+      className={styles.stateCard}
+      role={icon === 'alert' ? 'alert' : 'status'}
+    >
       {icon !== 'loading' && icon && (
         <div className={styles.emptyIcon}>{icon}</div>
       )}
@@ -275,7 +285,10 @@ function CategoryIntro() {
   return (
     <section className={styles.categoryIntro} aria-label="Partner categories">
       {categories.map((category) => (
-        <article key={category.id} className={styles[`categoryIntro_${category.color}`]}>
+        <article
+          key={category.id}
+          className={styles[`categoryIntro_${category.color}`]}
+        >
           <span>
             {category.id === 'local_district' ? (
               <MapPin size={18} />
@@ -480,10 +493,7 @@ export default function NetworkExplorer() {
             title="Partner information is temporarily unavailable"
             description="Please try again in a moment."
             action={
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-              >
+              <button type="button" onClick={() => window.location.reload()}>
                 Try again
               </button>
             }
@@ -494,9 +504,7 @@ export default function NetworkExplorer() {
             icon={<Handshake size={26} aria-hidden="true" />}
             title="Our network is growing"
             description="Published partner profiles will appear here as they are added. We believe meaningful work is built through shared purpose."
-            action={
-              <a href="/contact">Talk with our team</a>
-            }
+            action={<a href="/contact">Talk with our team</a>}
           />
         ) : visiblePartners.length === 0 ? (
           <StateCard
@@ -600,18 +608,13 @@ export default function NetworkExplorer() {
                 <h2>{visiblePartners.length} organizations</h2>
               </div>
               <p>
-                Choose any profile to see more about their work and
-                connection.
+                Choose any profile to see more about their work and connection.
               </p>
             </div>
 
             <div className={styles.directory}>
               {visiblePartners.map((partner, index) => (
-                <PartnerCard
-                  key={partner.id}
-                  partner={partner}
-                  index={index}
-                />
+                <PartnerCard key={partner.id} partner={partner} index={index} />
               ))}
             </div>
           </>

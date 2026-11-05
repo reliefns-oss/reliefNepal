@@ -6,6 +6,7 @@ import {
   getAdminErrorMessage,
   getImageUploadErrorMessage,
 } from '../../lib/admin-feedback.js';
+import { useToast } from '../../components/ui/Toast.jsx';
 
 const definitions = {
   gallery: {
@@ -172,6 +173,8 @@ const definitions = {
       contact: '',
       email: '',
       experience: 0,
+      photo_url: '',
+      photo_public_id: null,
       display_order: 0,
       is_active: true,
     },
@@ -184,11 +187,72 @@ const definitions = {
       ['contact', 'Contact number', 'text'],
       ['email', 'Email', 'email'],
       ['experience', 'Years of experience', 'number'],
+      ['photo_url', 'Board member photo', 'board-photo'],
       ['display_order', 'Display order', 'number'],
       ['is_active', 'Active (show on website)', 'select:true,false'],
     ],
     label: (item) =>
       `${item.designation} | ${item.is_active ? 'Active' : 'Inactive'}`,
+  },
+  procurement: {
+    heading: 'Procurement',
+    singular: 'procurement item',
+    path: 'procurement',
+    blank: {
+      title: '',
+      slug: '',
+      reference_number: '',
+      category: 'goods',
+      description: '',
+      requirements: '',
+      submission_instructions: '',
+      submission_email: '',
+      submission_url: '',
+      attachment_url: '',
+      deadline: '',
+      status: 'draft',
+      location: '',
+      duration: '',
+      work_schedule: '',
+      display_order: 0,
+      publication_status: 'draft',
+    },
+    fields: [
+      ['title', 'Procurement title', 'text'],
+      ['slug', 'URL slug (generated from title; editable)', 'slug'],
+      ['reference_number', 'Reference number', 'text'],
+      [
+        'category',
+        'Category',
+        'select:goods,services,works,general',
+      ],
+      ['description', 'Description', 'textarea'],
+      ['requirements', 'Requirements / Specifications', 'textarea'],
+      ['submission_instructions', 'Submission instructions', 'textarea'],
+      [
+        'submission_email',
+        'Submission email',
+        'email',
+      ],
+      ['submission_url', 'Submission URL (optional)', 'url'],
+      ['attachment_url', 'Attachment (PDF, DOC, etc.)', 'procurement-attachment'],
+      ['deadline', 'Submission deadline', 'date'],
+      [
+        'status',
+        'Status',
+        'select:draft,open,closed,awarded,cancelled',
+      ],
+      ['location', 'Location (optional)', 'text'],
+      ['duration', 'Duration / Contract period (optional)', 'text'],
+      ['work_schedule', 'Work schedule / Timeline (optional)', 'text'],
+      ['display_order', 'Display order (lower numbers appear first)', 'number'],
+      [
+        'publication_status',
+        'Publication',
+        'select:draft,published,archived',
+      ],
+    ],
+    label: (item) => `${item.category} | ${item.status} | ${item.publication_status}`,
   },
   programs: {
     heading: 'Programs',
@@ -239,6 +303,18 @@ const requiredFields = {
     'contact',
     'email',
     'experience',
+  ],
+  procurement: [
+    'title',
+    'slug',
+    'reference_number',
+    'category',
+    'description',
+    'requirements',
+    'submission_instructions',
+    'submission_email',
+    'deadline',
+    'status',
   ],
   programs: ['name', 'slug'],
 };
@@ -298,11 +374,16 @@ export default function AdminContentSection({ type, request }) {
   const [uploading, setUploading] = useState(false);
   const [uploadStep, setUploadStep] = useState('');
   const [pendingPhotos, setPendingPhotos] = useState([]);
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('success');
   const [networkSearch, setNetworkSearch] = useState('');
   const [networkCategory, setNetworkCategory] = useState('all');
   const pendingPhotosRef = useRef(pendingPhotos);
+  const { toast } = useToast();
+
+  // Reset form when type changes (e.g., switching tabs)
+  useEffect(() => {
+    setForm(definitions[type].blank);
+    setEditing(null);
+  }, [type]);
 
   useEffect(() => {
     pendingPhotosRef.current = pendingPhotos;
@@ -318,8 +399,12 @@ export default function AdminContentSection({ type, request }) {
   );
 
   function showMessage(text, tone = 'success') {
-    setMessage(text);
-    setMessageType(tone);
+    toast({
+      title: tone === 'success' ? 'Success' : tone === 'error' ? 'Error' : tone === 'warning' ? 'Warning' : 'Info',
+      description: text,
+      type: tone,
+      duration: tone === 'error' ? 8000 : 5000,
+    });
   }
 
   async function refresh() {
@@ -382,45 +467,66 @@ export default function AdminContentSection({ type, request }) {
     onStep('Preparing secure upload…');
     const signed = await request('/admin/uploads/sign', {
       method: 'POST',
-      body: JSON.stringify({ purpose }),
+      body: JSON.stringify({ purpose, mime_type: file.type }),
     });
     onStep('Uploading to image storage…');
-    const body = new FormData();
-    body.append('file', file);
-    body.append('api_key', signed.api_key);
-    body.append('timestamp', String(signed.timestamp));
-    body.append('public_id', signed.public_id);
-    body.append('signature', signed.signature);
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${signed.cloud_name}/image/upload`,
-      { method: 'POST', body },
-    );
-    const uploaded = await response.json().catch(() => null);
-    if (!response.ok)
-      throw new Error(
-        `Cloudinary: ${uploaded?.error?.message || `upload failed (${response.status})`}`,
-      );
-    if (!uploaded?.secure_url || !uploaded?.signature)
-      throw new Error('Cloudinary returned an incomplete upload response.');
+    // Use FileReader.readAsDataURL() instead of btoa to avoid "Maximum call stack size exceeded" with binary data
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // reader.result is like "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+        const base64 = reader.result.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const uploaded = await request('/admin/uploads/direct', {
+      method: 'POST',
+      body: JSON.stringify({
+        public_id: signed.public_id,
+        file_base64: base64,
+        mime_type: file.type,
+      }),
+    });
     onStep('Verifying photo…');
     return request('/admin/uploads/verify', {
       method: 'POST',
-      body: JSON.stringify(uploaded),
+      body: JSON.stringify({
+        public_id: signed.public_id,
+        secure_url: uploaded.media_url || uploaded.image_url || uploaded.logo_url || uploaded.banner_url,
+      }),
     });
   }
 
   async function uploadPhoto(file, purpose = 'gallery-photo') {
     if (!file) return;
-    if (
-      !['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(
-        file.type,
-      ) ||
-      file.size > 8 * 1024 * 1024
-    ) {
-      showMessage(
-        'Choose a JPG, PNG, WebP, or AVIF image smaller than 8 MB.',
-        'error',
-      );
+
+    // Define allowed types per purpose
+    const imageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+    const docTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ];
+    const isDocPurpose = purpose === 'procurement-attachment';
+    const allowedTypes = isDocPurpose ? [...imageTypes, ...docTypes] : imageTypes;
+    const maxSize = 16 * 1024 * 1024; // 16 MB for documents
+
+    if (!allowedTypes.includes(file.type) || file.size > maxSize) {
+      if (isDocPurpose) {
+        showMessage(
+          'Choose a PDF, Word, Excel, or image file smaller than 16 MB.',
+          'error',
+        );
+      } else {
+        showMessage(
+          'Choose a JPG, PNG, WebP, or AVIF image smaller than 8 MB.',
+          'error',
+        );
+      }
       return;
     }
     setUploading(true);
@@ -437,7 +543,9 @@ export default function AdminContentSection({ type, request }) {
           ? 'Notice photo uploaded. Save the notice to keep it.'
           : purpose === 'partner-logo'
             ? 'Partner logo uploaded. Save the profile to keep it.'
-            : 'Photo uploaded. Save the gallery item to publish it.',
+            : purpose === 'procurement-attachment'
+              ? 'Attachment uploaded. Save the procurement item to publish it.'
+              : 'Photo uploaded. Save the gallery item to publish it.',
       );
     } catch (error) {
       showMessage(getImageUploadErrorMessage(error), 'error');
@@ -1063,6 +1171,112 @@ export default function AdminContentSection({ type, request }) {
                   )}
                 </div>
               );
+            if (type === 'board-members' && key === 'photo_url')
+              return (
+                <div key={key} className="mt-4">
+                  <span className="block text-sm font-semibold">{label}</span>
+                  <p className="mt-1 text-xs font-normal text-slate-500">
+                    Upload a clear JPG, PNG, WebP, or AVIF photo, up to 8 MB.
+                  </p>
+                  <label className="mt-2 block text-sm">
+                    Choose photo
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/avif"
+                      disabled={busy || uploading}
+                      onChange={(event) => {
+                        const input = event.currentTarget;
+                        const file = input.files?.[0];
+                        input.value = '';
+                        uploadPhoto(file, 'board-photo');
+                      }}
+                      className="mt-1 block w-full rounded-lg border p-2.5"
+                    />
+                  </label>
+                  {uploading && (
+                    <p role="status" className="mt-2 text-sm text-forest-700">
+                      {uploadStep}
+                    </p>
+                  )}
+                  {form.photo_url && (
+                    <div className="mt-3 flex items-center gap-3 rounded-lg border border-slate-200 p-3">
+                      <img
+                        src={form.photo_url}
+                        alt={`${form.name || 'Board member'} preview`}
+                        className="h-16 w-16 rounded-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm((current) => ({
+                            ...current,
+                            photo_url: '',
+                            photo_public_id: null,
+                          }))
+                        }
+                        className="text-sm font-semibold text-red-700"
+                      >
+                        Remove photo
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            if (type === 'procurement' && key === 'attachment_url')
+              return (
+                <div key={key} className="mt-4">
+                  <span className="block text-sm font-semibold">{label}</span>
+                  <p className="mt-1 text-xs font-normal text-slate-500">
+                    Upload a PDF, Word, Excel, or image file (up to 16 MB).
+                  </p>
+                  <label className="mt-2 block text-sm">
+                    Choose file
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,image/jpeg,image/png,image/webp,image/avif"
+                      disabled={busy || uploading}
+                      onChange={(event) => {
+                        const input = event.currentTarget;
+                        const file = input.files?.[0];
+                        input.value = '';
+                        uploadPhoto(file, 'procurement-attachment');
+                      }}
+                      className="mt-1 block w-full rounded-lg border p-2.5"
+                    />
+                  </label>
+                  {uploading && (
+                    <p role="status" className="mt-2 text-sm text-forest-700">
+                      {uploadStep}
+                    </p>
+                  )}
+                  {form.attachment_url && (
+                    <div className="mt-3 flex items-center gap-3 rounded-lg border border-slate-200 p-3">
+                      <div className="flex items-center gap-3">
+                        <svg className="h-10 w-10 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 6.5L17.5 9H13v-2.5zM9 15H7v-4h2v4zm4 0h-2v-4h2v4zm4 0h-2v-4h2v4z" />
+                        </svg>
+                        <div>
+                          <p className="font-medium text-slate-900">Attachment</p>
+                          <p className="text-sm text-slate-500">Ready to publish</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm((current) => ({
+                            ...current,
+                            attachment_url: '',
+                            attachment_public_id: null,
+                          }))
+                        }
+                        className="text-sm font-semibold text-red-700"
+                      >
+                        Remove attachment
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
             if (['notices', 'vacancies'].includes(type) && key === 'title')
               return (
                 <label key={key} className="mt-4 block text-sm font-semibold">
@@ -1070,7 +1284,7 @@ export default function AdminContentSection({ type, request }) {
                   {requiredMark(required)}
                   <input
                     required
-                    value={form.title}
+                    value={form.title || ''}
                     onChange={(event) => {
                       const title = event.target.value;
                       setForm((current) => ({
@@ -1090,7 +1304,7 @@ export default function AdminContentSection({ type, request }) {
                   {requiredMark(required)}
                   <input
                     required={required}
-                    value={form.name}
+                    value={form.name || ''}
                     onChange={(event) => {
                       const name = event.target.value;
                       setForm((current) => ({
@@ -1195,20 +1409,6 @@ export default function AdminContentSection({ type, request }) {
             );
           })}
         </fieldset>
-        {message && (
-          <p
-            role={messageType === 'error' ? 'alert' : 'status'}
-            className={`mt-4 rounded-lg border p-3 text-sm ${
-              messageType === 'error'
-                ? 'border-red-200 bg-red-50 text-red-800'
-                : messageType === 'warning'
-                  ? 'border-amber-200 bg-amber-50 text-amber-900'
-                  : 'border-forest-200 bg-forest-50 text-forest-900'
-            }`}
-          >
-            {message}
-          </p>
-        )}
         {type === 'gallery' &&
           !projectsLoading &&
           projects.length === 0 &&
