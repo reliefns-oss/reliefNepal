@@ -7,14 +7,15 @@ import { apiRequest } from '../../lib/api/client.js';
 
 const PAGE_SIZE = 10;
 
-function noticeDate(value) {
-  if (!value) return 'Date not available';
+function noticeDate(publishedAt, createdAt) {
+  const dateValue = publishedAt || createdAt;
+  if (!dateValue) return null;
   return new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
     timeZone: 'Asia/Kathmandu',
-  }).format(new Date(value));
+  }).format(new Date(dateValue));
 }
 
 export default function NoticeList() {
@@ -201,10 +202,10 @@ export default function NoticeList() {
               className="grid gap-2 px-4 py-4 sm:grid-cols-[9rem_1fr] sm:gap-4 sm:px-5"
             >
               <time
-                dateTime={notice.published_at}
+                dateTime={notice.published_at || notice.created_at}
                 className="text-xs font-medium text-slate-500 sm:pt-1 sm:text-sm"
               >
-                {noticeDate(notice.published_at)}
+                {noticeDate(notice.published_at, notice.created_at)}
               </time>
               <div className="flex min-w-0 gap-4">
                 {notice.image_url && (

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { apiRequest } from '../../lib/api/client.js';
+import { ChevronRight } from 'lucide-react';
 
 const focusAreas = [
   {
@@ -41,26 +42,6 @@ const focusAreas = [
   },
 ];
 
-const resources = [
-  {
-    icon: '?',
-    title: 'Annual Reports',
-    description: 'Explore our organizational progress and activities.',
-    link: 'https://reliefnepal.org.np/',
-  },
-  {
-    icon: '?',
-    title: 'Publications',
-    description: 'Read resources, publications and learning materials.',
-    link: 'https://reliefnepal.org.np/',
-  },
-  {
-    icon: '?',
-    title: 'Organization Profile',
-    description: 'Learn about our mission, vision and areas of work.',
-    link: 'https://reliefnepal.org.np/wp-content/uploads/2024/05/Org-Progile_Relief-Nepal_2024.pdf',
-  },
-];
 
 export default function HomePageClient() {
   const [projects, setProjects] = useState([]);
@@ -138,8 +119,8 @@ export default function HomePageClient() {
                 <h3>{area.title}</h3>
                 <p>{area.description}</p>
 
-                <a href="/projects" aria-label={`Explore ${area.title}`}>
-                  <span aria-hidden="true">?</span>
+                <a href="/projects" aria-label={`Explore ${area.title}`} className="rn-focus-link">
+                  <ChevronRight className="rn-focus-arrow" aria-hidden="true" />
                 </a>
               </article>
             ))}
@@ -156,7 +137,7 @@ export default function HomePageClient() {
             </div>
 
             <a className="rn-text-link" href="/projects">
-              View all projects <span aria-hidden="true">?</span>
+              View all projects <ChevronRight className="rn-text-link-arrow" aria-hidden="true" />
             </a>
           </div>
 
@@ -194,7 +175,7 @@ export default function HomePageClient() {
                     className="rn-text-link"
                     href={`/projects/${project.slug}`}
                   >
-                    Discover project <span aria-hidden="true">?</span>
+                    Discover project <ChevronRight className="rn-text-link-arrow" aria-hidden="true" />
                   </a>
                 </div>
               </article>
@@ -220,39 +201,6 @@ export default function HomePageClient() {
         </div>
       </section>
 
-      {/* Resources */}
-      <section className="rn-resources rn-section" aria-labelledby="resources-heading">
-        <div className="rn-container">
-          <div className="rn-section-heading">
-            <div>
-              <h2 id="resources-heading">Learn more about our work.</h2>
-            </div>
-          </div>
-
-          <div className="rn-resource-grid">
-            {resources.map((resource) => (
-              <a
-                className="rn-resource-card"
-                href={resource.link}
-                key={resource.title}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <span className="rn-resource-icon" aria-hidden="true">
-                  {resource.icon}
-                </span>
-
-                <span className="rn-resource-copy">
-                  <strong>{resource.title}</strong>
-                  <small>{resource.description}</small>
-                  <span className="rn-resource-link">Explore resource ?</span>
-                </span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Call to action */}
       <section className="rn-cta" aria-labelledby="cta-heading">
         <div className="rn-container rn-cta-inner">
@@ -262,11 +210,11 @@ export default function HomePageClient() {
 
           <div className="rn-cta-actions">
             <a className="rn-button rn-button-primary" href="/get-involved">
-              Get Involved <span aria-hidden="true">?</span>
+              Get Involved <ChevronRight className="rn-button-arrow" aria-hidden="true" />
             </a>
 
             <a className="rn-cta-contact" href="/contact">
-              Talk to our team <span aria-hidden="true">?</span>
+              Talk to our team <ChevronRight className="rn-button-arrow" aria-hidden="true" />
             </a>
           </div>
         </div>

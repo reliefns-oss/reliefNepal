@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Facebook, Linkedin, Twitter, Mail, MapPin, Phone } from 'lucide-react';
 import styles from './Footer.module.css';
 
@@ -182,17 +181,6 @@ export default function Footer() {
             <p className={styles.copyright}>
               © {new Date().getFullYear()} Relief Nepal. All rights reserved.
             </p>
-            <nav aria-label="Legal links" className={styles.legal}>
-              <Link href="/privacy" className={styles.legalLink}>
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className={styles.legalLink}>
-                Terms of Use
-              </Link>
-              <Link href="/accessibility" className={styles.legalLink}>
-                Accessibility
-              </Link>
-            </nav>
           </div>
         </div>
       </div>

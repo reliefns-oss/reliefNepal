@@ -265,11 +265,6 @@ export default function BoardMembers({ members = [], loading = false, error = nu
             );
           })}
         </div>
-
-        <p className={styles.tableNote}>
-          Contact information is displayed as provided in the board
-          member records. Photos are displayed when available.
-        </p>
       </div>
     </section>
   );

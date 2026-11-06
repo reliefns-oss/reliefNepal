@@ -627,12 +627,68 @@ img {
   font-weight: 800;
 }
 
-.rn-text-link span {
+.rn-text-link span,
+.rn-text-link svg {
   font-size: 17px;
   transition: transform 180ms ease;
 }
 
-.rn-text-link:hover span {
+.rn-text-link:hover span,
+.rn-text-link:hover svg {
+  transform: translateX(4px);
+}
+
+/* Focus area arrow animation */
+.rn-focus-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--rn-green-light);
+  color: var(--rn-green);
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.rn-focus-link:hover {
+  background: var(--rn-green);
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.rn-focus-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* CTA button arrow animation */
+.rn-button svg {
+  width: 17px;
+  height: 17px;
+  transition: transform 180ms ease;
+}
+
+.rn-button:hover svg {
+  transform: translateX(4px);
+}
+
+/* Generic arrow animation for text links */
+.rn-text-link-arrow,
+.rn-focus-arrow,
+.rn-button-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 180ms ease;
+}
+
+.rn-text-link:hover .rn-text-link-arrow,
+.rn-focus-link:hover .rn-focus-arrow,
+.rn-button:hover .rn-button-arrow {
   transform: translateX(4px);
 }
 

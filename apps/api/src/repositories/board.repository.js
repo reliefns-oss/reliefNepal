@@ -6,6 +6,7 @@ import {
   update,
   deleteById,
 } from './base.repository.js';
+import { getPublicUrl } from '../services/storage.js';
 
 const BOARD_COLUMNS = `
   id, sn, name, qualification, expertise, designation,
@@ -16,7 +17,10 @@ const BOARD_COLUMNS = `
 
 function transformBoard(board) {
   if (!board) return null;
-  return board;
+  return {
+    ...board,
+    photo_url: board.photo_public_id ? getPublicUrl(board.photo_public_id) : board.photo_url,
+  };
 }
 
 function transformBoardList(boards) {

@@ -5,7 +5,7 @@
 INSERT INTO admin_users (email, password_hash, role, display_name, is_active)
 VALUES (
     'admin@reliefnepal.org.np',
-    '$2a$10$X7X7X7X7X7X7X7X7X7X7X.u7X7X7X7X7X7X7X7X7X7X7X7X7X7X7X',
+    '$2a$12$xyUYkuvbpFn4JP4jKKuBnezjUJhUbhWXEcv2Ch3bsGWd2nqQLFKIy',
     'admin',
     'System Administrator',
     true

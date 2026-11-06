@@ -25,6 +25,14 @@ function transformNoticeList(notices) {
   return notices.map(transformNotice);
 }
 
+async function findNoticeById(id, columns = NOTICE_COLUMNS) {
+  const notice = await findOne('notices', {
+    columns,
+    filters: { id },
+  });
+  return notice;
+}
+
 export const noticeRepository = {
   async findPublished(options = {}) {
     const { limit, offset } = options;
@@ -59,10 +67,7 @@ export const noticeRepository = {
   },
 
   async findById(id) {
-    const notice = await findOne('notices', {
-      columns: NOTICE_COLUMNS,
-      filters: { id },
-    });
+    const notice = await findNoticeById(id);
     return transformNotice(notice);
   },
 
@@ -80,7 +85,7 @@ export const noticeRepository = {
   },
 
   async delete(id) {
-    const notice = await findById(id, 'image_public_id');
+    const notice = await findNoticeById(id, 'image_public_id');
     const deleted = await deleteById('notices', id);
     return { deleted, imagePublicId: notice?.image_public_id };
   },

@@ -26,6 +26,14 @@ function transformNetworkList(networks) {
   return networks.map(transformNetwork);
 }
 
+async function findNetworkById(id, columns = NETWORK_COLUMNS) {
+  const network = await findOne('network_partners', {
+    columns,
+    filters: { id },
+  });
+  return network;
+}
+
 export const networkRepository = {
   async findPublished(options = {}) {
     const { limit, offset } = options;
@@ -66,10 +74,7 @@ export const networkRepository = {
   },
 
   async findById(id) {
-    const network = await findOne('network_partners', {
-      columns: NETWORK_COLUMNS,
-      filters: { id },
-    });
+    const network = await findNetworkById(id);
     return transformNetwork(network);
   },
 
@@ -88,7 +93,7 @@ export const networkRepository = {
   },
 
   async delete(id) {
-    const network = await findById(id, 'logo_public_id');
+    const network = await findNetworkById(id, 'logo_public_id');
     const deleted = await deleteById('network_partners', id);
     return { deleted, logoPublicId: network?.logo_public_id };
   },
