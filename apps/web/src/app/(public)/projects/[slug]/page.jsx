@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import JsonLd from '../../../../components/seo/JsonLd.jsx';
-import { breadcrumbSchema, organizationSchema, projectSchema } from '../../../../lib/seo.js';
+import { breadcrumbSchema, organizationSchema, projectSchema, webPageSchema } from '../../../../lib/seo.js';
 
 const apiBase = (
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
@@ -48,6 +48,7 @@ export async function generateMetadata({ params }) {
   if (!project) {
     return { title: 'Project not found | Relief Nepal' };
   }
+  const url = `/projects/${slug}`;
   return {
     title: `${project.title} | Relief Nepal`,
     description: project.summary || `Learn about ${project.title} and Relief Nepal's work.`,
@@ -58,6 +59,9 @@ export async function generateMetadata({ params }) {
       images: project.banner_url ? [{ url: project.banner_url, width: 1200, height: 630, alt: project.title }] : [],
       publishedTime: project.created_at,
       modifiedTime: project.updated_at,
+      authors: ['Relief Nepal'],
+      section: 'Projects',
+      tags: ['project', 'program', 'relief nepal', project.program?.name].filter(Boolean),
     },
     twitter: {
       card: 'summary_large_image',
@@ -66,7 +70,16 @@ export async function generateMetadata({ params }) {
       images: project.banner_url ? [project.banner_url] : [],
     },
     alternates: {
-      canonical: `/projects/${slug}`,
+      canonical: url,
+      languages: {
+        'en-NP': `https://reliefnepal.org.np${url}`,
+        'ne-NP': `https://reliefnepal.org.np/ne${url}`,
+        'x-default': `https://reliefnepal.org.np${url}`,
+      },
+    },
+    other: {
+      'theme-color': '#087943',
+      'color-scheme': 'light',
     },
   };
 }
@@ -79,28 +92,44 @@ export default async function ProjectDetailPage({ params }) {
   const impactNumbers = formatImpactNumbers(project.impact_metrics);
   const impactDetails = formatImpactDetails(project.impact_details);
 
+  const breadcrumbData = breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Projects', url: '/projects' },
+    { name: project.title, url: `/projects/${slug}` }
+  ]);
+  const organizationData = organizationSchema;
+  const projectData = projectSchema({
+    name: project.title,
+    description: project.summary || `Learn about ${project.title} and Relief Nepal's work.`,
+    url: `/projects/${slug}`,
+    image: project.banner_url,
+    dateCreated: project.created_at,
+    dateModified: project.updated_at,
+    projectStatus: project.status,
+    location: project.location,
+    funder: project.donor ? { name: project.donor } : undefined,
+  });
+  const webPageData = webPageSchema({
+    name: project.title,
+    description: project.summary || `Learn about ${project.title} and Relief Nepal's work.`,
+    url: `/projects/${slug}`,
+    image: project.banner_url,
+    datePublished: project.created_at,
+    dateModified: project.updated_at,
+    breadcrumb: [
+      { name: 'Home', url: '/' },
+      { name: 'Projects', url: '/projects' },
+      { name: project.title, url: `/projects/${slug}` }
+    ],
+    isPartOf: true,
+  });
+
   return (
     <>
-      <JsonLd key="project-breadcrumb" data={breadcrumbSchema([
-        { name: 'Home', url: '/' },
-        { name: 'Projects', url: '/projects' },
-        { name: project.title, url: `/projects/${slug}` }
-      ])} />
-      <JsonLd key="project-org" data={organizationSchema} />
-      <JsonLd
-        key="project-schema"
-        data={projectSchema({
-          name: project.title,
-          description: project.summary || `Learn about ${project.title} and Relief Nepal's work.`,
-          url: `/projects/${slug}`,
-          image: project.banner_url,
-          dateCreated: project.created_at,
-          dateModified: project.updated_at,
-          projectStatus: project.status,
-          location: project.location,
-          funder: project.donor ? { name: project.donor } : undefined,
-        })}
-      />
+      <JsonLd key="project-breadcrumb" data={breadcrumbData} />
+      <JsonLd key="project-org" data={organizationData} />
+      <JsonLd key="project-schema" data={projectData} />
+      <JsonLd key="project-webpage" data={webPageData} />
       <article className="min-h-[65vh] bg-[#f7f8f5] px-5 py-16 text-[#183a2a] sm:py-24">
         <div className="mx-auto max-w-4xl">
           <a

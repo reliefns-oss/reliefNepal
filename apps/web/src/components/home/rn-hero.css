@@ -41,42 +41,34 @@
 }
 
 /* ------------------------------------------------ overlays */
-.rn-home-hero-shade {
+/* Subtle bottom overlay to make control bar visible */
+.rn-home-hero-bottom-fade {
   position: absolute;
-  inset: 0;
-  z-index: -2;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(7, 20, 36, 0.88) 0%,
-      rgba(7, 20, 36, 0.55) 48%,
-      rgba(7, 20, 36, 0.15) 100%
-    ),
-    linear-gradient(0deg, rgba(7, 20, 36, 0.85) 0%, transparent 38%);
-}
-.rn-home-hero-glow {
-  position: absolute;
-  z-index: -1;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.35;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  z-index: 1;
   pointer-events: none;
+  background: linear-gradient(
+    0deg,
+    rgba(7, 20, 36, 0.85) 0%,
+    rgba(7, 20, 36, 0.4) 40%,
+    transparent 100%
+  );
 }
-.rn-home-hero-glow-a {
-  width: 420px;
-  height: 420px;
-  left: -120px;
-  top: -80px;
-  background: var(--hero-blue);
-  animation: rnHomeHeroDriftA 16s ease-in-out infinite alternate;
-}
-.rn-home-hero-glow-b {
-  width: 360px;
-  height: 360px;
-  right: -80px;
-  bottom: -60px;
-  background: var(--hero-green);
-  animation: rnHomeHeroDriftB 20s ease-in-out infinite alternate;
+
+/* Responsive - stronger fade on mobile */
+@media (max-width: 760px) {
+  .rn-home-hero-bottom-fade {
+    height: 50%;
+    background: linear-gradient(
+      0deg,
+      rgba(7, 20, 36, 0.92) 0%,
+      rgba(7, 20, 36, 0.55) 50%,
+      transparent 100%
+    );
+  }
 }
 
 /* ------------------------------------------------ content */
@@ -243,21 +235,23 @@
   align-items: baseline;
   gap: 0.9rem;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.95);
   animation: rnHomeHeroFade 0.7s ease both;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 .rn-home-hero-count {
   font-size: 1.6rem;
   font-weight: 700;
   color: #fff;
   font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 .rn-home-hero-count i {
   margin-left: 0.3rem;
   font-style: normal;
   font-size: 0.85rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .rn-home-hero-bars {
@@ -280,13 +274,16 @@
   width: 100%;
   height: 4px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   overflow: hidden;
-  transition: height 0.25s ease;
+  transition: height 0.25s ease, background 0.25s ease;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 .rn-home-hero-bar:hover b,
 .rn-home-hero-bar.active b {
   height: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
 }
 .rn-home-hero-bar b::after {
   content: '';
@@ -295,6 +292,7 @@
   background: #fff;
   transform: scaleX(0);
   transform-origin: left;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 .rn-home-hero-bar.done b::after {
   transform: scaleX(1);
@@ -322,23 +320,31 @@
   height: 46px;
   border-radius: 50%;
   color: #fff;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
   cursor: pointer;
   transition:
     background 0.25s ease,
     color 0.25s ease,
-    transform 0.25s ease;
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
 }
 .rn-home-hero-arrows button:hover {
   background: #fff;
   color: var(--hero-blue);
-  transform: scale(1.08);
+  border-color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.4);
 }
 .rn-home-hero-arrows button:focus-visible {
   outline: 3px solid #fff;
   outline-offset: 2px;
+}
+.rn-home-hero-arrows svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 /* ------------------------------------------------ keyframes */

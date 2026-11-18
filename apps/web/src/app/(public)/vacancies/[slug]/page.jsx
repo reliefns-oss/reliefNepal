@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import JsonLd from '../../../../components/seo/JsonLd.jsx';
-import { breadcrumbSchema, organizationSchema, articleSchema } from '../../../../lib/seo.js';
+import { breadcrumbSchema, organizationSchema, articleSchema, webPageSchema } from '../../../../lib/seo.js';
 
 const apiBase = (
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
@@ -34,6 +34,7 @@ export async function generateMetadata({ params }) {
   if (!vacancy) {
     return { title: 'Vacancy not found | Relief Nepal' };
   }
+  const url = `/vacancies/${slug}`;
   return {
     title: `${vacancy.title} | Relief Nepal`,
     description: vacancy.description?.slice(0, 160) || `Career opportunity: ${vacancy.title}`,
@@ -42,6 +43,10 @@ export async function generateMetadata({ params }) {
       description: vacancy.description?.slice(0, 160) || `Career opportunity: ${vacancy.title}`,
       type: 'article',
       publishedTime: vacancy.created_at,
+      modifiedTime: vacancy.updated_at || vacancy.created_at,
+      authors: ['Relief Nepal'],
+      section: 'Careers',
+      tags: ['vacancy', 'job', 'career', 'relief nepal'],
       images: vacancy.image_url ? [{ url: vacancy.image_url, width: 1200, height: 630, alt: vacancy.title }] : [],
     },
     twitter: {
@@ -51,7 +56,16 @@ export async function generateMetadata({ params }) {
       images: vacancy.image_url ? [vacancy.image_url] : [],
     },
     alternates: {
-      canonical: `/vacancies/${slug}`,
+      canonical: url,
+      languages: {
+        'en-NP': `https://reliefnepal.org.np${url}`,
+        'ne-NP': `https://reliefnepal.org.np/ne${url}`,
+        'x-default': `https://reliefnepal.org.np${url}`,
+      },
+    },
+    other: {
+      'theme-color': '#087943',
+      'color-scheme': 'light',
     },
   };
 }
@@ -66,27 +80,46 @@ export default async function VacancyDetailPage({ params }) {
       ? `mailto:${vacancy.application_email}?subject=${encodeURIComponent(`Application for ${vacancy.title}`)}`
       : null);
 
+  const breadcrumbData = breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Vacancies', url: '/vacancies' },
+    { name: vacancy.title, url: `/vacancies/${slug}` }
+  ]);
+  const organizationData = organizationSchema;
+  const articleData = articleSchema({
+    headline: vacancy.title,
+    description: vacancy.description?.slice(0, 160) || `Career opportunity: ${vacancy.title}`,
+    url: `/vacancies/${slug}`,
+    image: vacancy.image_url,
+    datePublished: vacancy.created_at,
+    dateModified: vacancy.updated_at || vacancy.created_at,
+    authorName: 'Relief Nepal',
+    publisherName: 'Relief Nepal',
+    publisherLogo: '/images/logo.jpg',
+    mainEntityOfPage: `/vacancies/${slug}`,
+    speakableSections: ['.whitespace-pre-line', 'main article', '[role="main"]', 'dl', 'section'],
+  });
+  const webPageData = webPageSchema({
+    name: vacancy.title,
+    description: vacancy.description?.slice(0, 160) || `Career opportunity: ${vacancy.title}`,
+    url: `/vacancies/${slug}`,
+    image: vacancy.image_url,
+    datePublished: vacancy.created_at,
+    dateModified: vacancy.updated_at || vacancy.created_at,
+    breadcrumb: [
+      { name: 'Home', url: '/' },
+      { name: 'Vacancies', url: '/vacancies' },
+      { name: vacancy.title, url: `/vacancies/${slug}` }
+    ],
+    isPartOf: true,
+  });
+
   return (
     <>
-      <JsonLd key="vacancy-breadcrumb" data={breadcrumbSchema([
-        { name: 'Home', url: '/' },
-        { name: 'Vacancies', url: '/vacancies' },
-        { name: vacancy.title, url: `/vacancies/${slug}` }
-      ])} />
-      <JsonLd key="vacancy-org" data={organizationSchema} />
-      <JsonLd
-        key="vacancy-article"
-        data={articleSchema({
-          title: vacancy.title,
-          description: vacancy.description?.slice(0, 160) || `Career opportunity: ${vacancy.title}`,
-          url: `/vacancies/${slug}`,
-          image: vacancy.image_url,
-          datePublished: vacancy.created_at,
-          dateModified: vacancy.updated_at || vacancy.created_at,
-          authorName: 'Relief Nepal',
-          publisherName: 'Relief Nepal',
-        })}
-      />
+      <JsonLd key="vacancy-breadcrumb" data={breadcrumbData} />
+      <JsonLd key="vacancy-org" data={organizationData} />
+      <JsonLd key="vacancy-article" data={articleData} />
+      <JsonLd key="vacancy-webpage" data={webPageData} />
       <main className="min-h-[65vh] bg-[#f7f8f5] px-5 py-14 text-[#183a2a] sm:py-20">
         <article className="mx-auto max-w-4xl">
           <Link

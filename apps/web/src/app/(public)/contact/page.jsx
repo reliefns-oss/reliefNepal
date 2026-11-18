@@ -1,6 +1,6 @@
 import ContactForm from '../../../components/forms/ContactForm.jsx';
 import JsonLd from '../../../components/seo/JsonLd.jsx';
-import { breadcrumbSchema, organizationSchema, faqSchema } from '../../../lib/seo.js';
+import { breadcrumbSchema, organizationSchema, faqSchema, webPageSchema, localBusinessSchema } from '../../../lib/seo.js';
 
 export const metadata = {
   title: 'Contact Relief Nepal | Get in Touch, Partnership Inquiries',
@@ -29,14 +29,35 @@ export const metadata = {
   },
   alternates: {
     canonical: '/contact',
+    languages: {
+      'en-NP': 'https://reliefnepal.org.np/contact',
+      'ne-NP': 'https://reliefnepal.org.np/ne/contact',
+      'x-default': 'https://reliefnepal.org.np/contact',
+    },
+  },
+  other: {
+    'theme-color': '#087943',
+    'color-scheme': 'light',
   },
 };
 
 export default function ContactPage() {
+  const breadcrumbData = breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'Contact', url: '/contact' }]);
+  const webPageData = webPageSchema({
+    name: 'Contact Relief Nepal | Get in Touch',
+    description: 'Send a question, share feedback, or start a conversation about working together. Our team will follow up using the email address you provide.',
+    url: '/contact',
+    image: '/images/og-contact.jpg',
+    breadcrumb: [{ name: 'Home', url: '/' }, { name: 'Contact', url: '/contact' }],
+    isPartOf: true,
+  });
+
   return (
     <>
-      <JsonLd key="contact-breadcrumb" data={breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'Contact', url: '/contact' }])} />
+      <JsonLd key="contact-breadcrumb" data={breadcrumbData} />
       <JsonLd key="contact-org" data={organizationSchema} />
+      <JsonLd key="contact-webpage" data={webPageData} />
+      <JsonLd key="contact-local-business" data={localBusinessSchema} />
       <JsonLd
         key="contact-faq"
         data={faqSchema([

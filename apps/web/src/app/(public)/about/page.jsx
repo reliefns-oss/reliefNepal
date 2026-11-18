@@ -1,6 +1,6 @@
 import AboutPageClient from './AboutPageClient';
 import JsonLd from '../../../components/seo/JsonLd.jsx';
-import { organizationSchema, breadcrumbSchema, faqSchema } from '../../../lib/seo.js';
+import { organizationSchema, breadcrumbSchema, faqSchema, webPageSchema, navigationSchema } from '../../../lib/seo.js';
 
 export const metadata = {
   title: 'About Relief Nepal | Vision, Mission, Board & Structure',
@@ -29,14 +29,47 @@ export const metadata = {
   },
   alternates: {
     canonical: '/about',
+    languages: {
+      'en-NP': 'https://reliefnepal.org.np/about',
+      'ne-NP': 'https://reliefnepal.org.np/ne/about',
+      'x-default': 'https://reliefnepal.org.np/about',
+    },
+  },
+  other: {
+    'theme-color': '#087943',
+    'color-scheme': 'light',
   },
 };
 
 export default function AboutPage() {
+  const breadcrumbData = breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'About', url: '/about' }]);
+  const webPageData = webPageSchema({
+    name: 'About Relief Nepal | Vision, Mission & Organization',
+    description: 'Non-profit organization established in 2008, working across Nepal for child protection, health, education, disaster resilience, WASH, and livelihoods.',
+    url: '/about',
+    image: '/images/og-about.jpg',
+    breadcrumb: [{ name: 'Home', url: '/' }, { name: 'About', url: '/about' }],
+    isPartOf: true,
+  });
+  const navData = navigationSchema([
+    { position: 1, name: 'About', url: '/about' },
+    { position: 2, name: 'Projects', url: '/projects' },
+    { position: 3, name: 'Impact', url: '/impact' },
+    { position: 4, name: 'Stories', url: '/stories' },
+    { position: 5, name: 'Gallery', url: '/gallery' },
+    { position: 6, name: 'Notices', url: '/notice' },
+    { position: 7, name: 'Vacancies', url: '/vacancies' },
+    { position: 8, name: 'Network', url: '/network' },
+    { position: 9, name: 'Contact', url: '/contact' },
+    { position: 10, name: 'Get Involved', url: '/get-involved' },
+  ]);
+
   return (
     <>
-      <JsonLd key="about-breadcrumb" data={breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'About', url: '/about' }])} />
+      <JsonLd key="about-breadcrumb" data={breadcrumbData} />
       <JsonLd key="about-org" data={organizationSchema} />
+      <JsonLd key="about-webpage" data={webPageData} />
+      <JsonLd key="about-navigation" data={navData} />
       <JsonLd
         key="about-faq"
         data={faqSchema([
@@ -50,11 +83,11 @@ export default function AboutPage() {
           },
           {
             question: 'Where does Relief Nepal operate?',
-            answer: 'Relief Nepal operates across Bagmati, Madhesh, and Koshi provinces of Nepal, directly benefiting more than 15,000 people annually.',
+            answer: 'Relief Nepal operates across Bagmati, Madhesh, and Karnali provinces of Nepal, directly benefiting more than 15,000 people annually.',
           },
           {
             question: 'How is Relief Nepal governed?',
-            answer: 'Relief Nepal is governed by a board of members with diverse expertise. The organization has four main departments: Program Development and Management, Administrative Department, Monitoring Evaluation and Knowledge Management, and Finance and Human Resource Management.',
+            answer: 'The General Assembly guides the Executive Committee, which is supported by the Advisory Committee. The Executive Director leads the Program Development and Management, Monitoring, Evaluation and Documentation, and Admin, Finance and HR divisions, with Internal Audit alongside the Executive Director.',
           },
         ])}
       />

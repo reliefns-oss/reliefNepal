@@ -2,46 +2,35 @@
 
 import { useState, useEffect } from 'react';
 import { apiRequest } from '../../lib/api/client.js';
-import { ChevronRight } from 'lucide-react';
+import {
+  BookOpen,
+  Briefcase,
+  CloudSun,
+  HeartHandshake,
+  HeartPulse,
+  LifeBuoy,
+  Megaphone,
+  ShieldCheck,
+  UsersRound,
+  ChevronRight,
+} from 'lucide-react';
 
-const focusAreas = [
+const planSectors = [
+  { title: 'Child Protection', icon: ShieldCheck },
+  { title: 'Education', icon: BookOpen },
+  { title: 'Employment and Income', icon: Briefcase },
+  { title: 'Health and Nutrition', icon: HeartPulse },
   {
-    number: '01',
-    icon: '♡',
-    title: 'Protection',
-    description:
-      'Promoting the rights, safety and dignity of children, women and marginalized communities.',
-  },
-  {
-    number: '02',
-    icon: '✚',
-    title: 'Health & Education',
-    description:
-      'Supporting healthier communities and more inclusive opportunities to learn.',
-  },
-  {
-    number: '03',
-    icon: '↗',
-    title: 'Disaster & Climate',
-    description:
-      'Strengthening preparedness, community resilience and humanitarian response.',
-  },
-  {
-    number: '04',
-    icon: '♧',
-    title: 'WASH',
-    description:
-      'Promoting access to safe water, sanitation and healthy hygiene practices.',
-  },
-  {
-    number: '05',
-    icon: '⌂',
-    title: 'Livelihoods',
-    description:
-      'Helping people build self-reliance through skills, opportunities and community action.',
+    title: 'Humanitarian Actions and Disaster Preparedness',
+    icon: LifeBuoy,
   },
 ];
 
+const crossCuttingTopics = [
+  { title: 'CCA', icon: CloudSun },
+  { title: 'Advocacy', icon: Megaphone },
+  { title: 'GEDSI', icon: UsersRound },
+];
 
 export default function HomePageClient() {
   const [projects, setProjects] = useState([]);
@@ -66,7 +55,10 @@ export default function HomePageClient() {
   return (
     <>
       {/* Welcome section */}
-      <section className="rn-welcome rn-section" aria-labelledby="welcome-heading">
+      <section
+        className="rn-welcome rn-section"
+        aria-labelledby="welcome-heading"
+      >
         <div className="rn-container rn-welcome-grid">
           <div className="rn-welcome-copy">
             <h2 id="welcome-heading">
@@ -77,67 +69,82 @@ export default function HomePageClient() {
               Relief Nepal, established in 2008 and headquartered in Sindhuli,
               is a non-profit organization dedicated to improving the well-being
               of underserved children, families, and communities. Operating
-              across the Bagmati, Madhesh, and Koshi provinces, the organization
-              successfully implemented diverse humanitarian and development
-              projects between 2021 and 2025, directly benefiting more than
-              15,000 people annually.
+              across the Bagmati, Madhesh, and Karnali provinces, the
+              organization successfully implemented diverse humanitarian and
+              development projects between 2021 and 2025, directly benefiting
+              more than 15,000 people annually.
             </p>
 
             <p>
               Moving forward, the organizational strategic plan for 2026–2030
-              centers on five core sectors: Child Protection, Education,
-              Employment and Income, Health and Nutrition, and Resilient
-              Humanitarian Actions and Disaster Preparedness. To ensure
-              long-term sustainability, Relief Nepal integrates three
-              cross-cutting areas into these sectors, aligning its future
-              programs with local, provincial, and federal government priorities
-              to actively contribute to Nepal&apos;s SDG targets.
+              focuses on five sectors: Child Protection, Education, Employment
+              and Income, Health and Nutrition, and Humanitarian Actions and
+              Disaster Preparedness. CCA, Advocacy, and GEDSI are integrated
+              across these sectors, aligning future programs with local,
+              provincial, and federal priorities and Nepal&apos;s SDG targets.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Focus areas */}
-      <section className="rn-focus rn-section" aria-labelledby="focus-heading">
+      {/* Strategic plan */}
+      <section className="rn-focus rn-section" aria-labelledby="plan-heading">
         <div className="rn-container">
           <div className="rn-section-heading">
             <div>
-              <h2 id="focus-heading">Creating change where it matters.</h2>
+              <h2 id="plan-heading">Our Plan for 2026–2030</h2>
             </div>
           </div>
 
-          <div className="rn-focus-grid">
-            {focusAreas.map((area) => (
-              <article className="rn-focus-card" key={area.number}>
-                <div className="rn-focus-card-top">
-                  <span className="rn-focus-icon" aria-hidden="true">
-                    {area.icon}
+          <div className="rn-plan-grid">
+            {planSectors.map(({ title, icon: Icon }, index) => (
+              <article className="rn-plan-card" key={title}>
+                <div className="rn-plan-card-top">
+                  <span className="rn-plan-icon">
+                    <Icon size={27} strokeWidth={1.8} aria-hidden="true" />
                   </span>
-                  <span className="rn-focus-number">{area.number}</span>
+                  <span className="rn-plan-number">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
                 </div>
-
-                <h3>{area.title}</h3>
-                <p>{area.description}</p>
-
-                <a href="/projects" aria-label={`Explore ${area.title}`} className="rn-focus-link">
-                  <ChevronRight className="rn-focus-arrow" aria-hidden="true" />
-                </a>
+                <h3>{title}</h3>
               </article>
             ))}
+          </div>
+
+          <div className="rn-crosscutting">
+            <h3>Cross-cutting</h3>
+            <ul>
+              {crossCuttingTopics.map(({ title, icon: Icon }) => (
+                <li key={title}>
+                  <Icon
+                    className="rn-crosscutting-icon"
+                    size={18}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                  {title}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
       {/* Projects */}
-      <section className="rn-projects rn-section" aria-labelledby="projects-heading">
+      <section
+        className="rn-projects rn-section"
+        aria-labelledby="projects-heading"
+      >
         <div className="rn-container">
           <div className="rn-section-heading rn-projects-heading">
             <div>
-              <h2 id="projects-heading">Projects that make a difference.</h2>
+              <h2 id="projects-heading">Impact Stories</h2>
             </div>
 
             <a className="rn-text-link" href="/projects">
-              View all projects <ChevronRight className="rn-text-link-arrow" aria-hidden="true" />
+              View all projects{' '}
+              <ChevronRight className="rn-text-link-arrow" aria-hidden="true" />
             </a>
           </div>
 
@@ -175,7 +182,11 @@ export default function HomePageClient() {
                     className="rn-text-link"
                     href={`/projects/${project.slug}`}
                   >
-                    Discover project <ChevronRight className="rn-text-link-arrow" aria-hidden="true" />
+                    Discover project{' '}
+                    <ChevronRight
+                      className="rn-text-link-arrow"
+                      aria-hidden="true"
+                    />
                   </a>
                 </div>
               </article>
@@ -210,11 +221,13 @@ export default function HomePageClient() {
 
           <div className="rn-cta-actions">
             <a className="rn-button rn-button-primary" href="/get-involved">
-              Get Involved <ChevronRight className="rn-button-arrow" aria-hidden="true" />
+              Get Involved{' '}
+              <ChevronRight className="rn-button-arrow" aria-hidden="true" />
             </a>
 
             <a className="rn-cta-contact" href="/contact">
-              Talk to our team <ChevronRight className="rn-button-arrow" aria-hidden="true" />
+              Talk to our team{' '}
+              <ChevronRight className="rn-button-arrow" aria-hidden="true" />
             </a>
           </div>
         </div>

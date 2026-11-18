@@ -113,43 +113,30 @@ const principles = [
 
 const organization = [
   {
-    title: 'Program Development and Management',
+    title: 'Program Development & Management Division',
     items: [
       'Child Protection',
-      'Education & Health',
       'WASH',
-      'Income Generation and Livelihood',
-      'DRR and CCA',
+      'Income Generation and Livelihood Promotion',
+      'Health & Education',
+      'DRM/CCA',
     ],
   },
   {
-    title: 'Administrative Department',
+    title: 'Monitoring, Evaluation & Documentation Division',
     items: [
-      'Office Management',
-      'Staff Management',
-      'Document Management',
-      'Public Service Management',
-      'Infrastructure Management',
-      'Meeting Management',
-      'Other activities management',
+      'Monitoring & evaluation unit',
+      'Policy Advocacy unit',
+      'Publication unit',
     ],
   },
   {
-    title: 'Monitoring, Evaluation and Knowledge Management Department',
+    title: 'Admin, Finance & HR Division',
     items: [
-      'Monitoring & Evaluation Unit',
-      'Policy and Advocacy Unit',
-      'Publication and Communication Unit',
-      'Research Unit',
-    ],
-  },
-  {
-    title: 'Finance and Human Resource Management Department',
-    items: [
-      'Admin & Procurement Unit',
-      'Finance Unit',
+      'Admin and Logistic',
+      'Finance unit',
       'HR Unit',
-      'Office Management',
+      'Office management',
     ],
   },
 ];
@@ -334,9 +321,9 @@ export default function AboutPageClient() {
                 <p className={styles.eyebrow}>How we work</p>
                 <h2 id="org-title">Organizational Structure</h2>
                 <p>
-                  Our organizational structure supports effective governance,
-                  coordination, transparent management, and program delivery.
-                  Scroll through each stage to see how the layers work together.
+                  The General Assembly guides the Executive Committee. The
+                  Executive Director leads three divisions, with support from
+                  the Advisory Committee and Internal Audit.
                 </p>
               </div>
 

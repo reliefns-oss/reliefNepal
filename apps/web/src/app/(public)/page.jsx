@@ -2,8 +2,14 @@ import RnHero from '../../components/home/RnHero.jsx';
 import DistrictMapSection from '../../components/geography/DistrictMapSection.jsx';
 import HomePageClient from './HomePageClient';
 import PartnerMarquee from '../../components/layout/PartnerMarquee.tsx';
+import ForexSection from '../../components/home/ForexSection.jsx';
 import JsonLd from '../../components/seo/JsonLd.jsx';
-import { organizationSchema, breadcrumbSchema } from '../../lib/seo.js';
+import {
+  organizationSchema,
+  breadcrumbSchema,
+  webPageSchema,
+  navigationSchema,
+} from '../../lib/seo.js';
 
 const homeHeroSlides = [
   { src: '/images/Picture7.png', caption: 'Community-led development' },
@@ -44,23 +50,52 @@ export const metadata = {
   },
   alternates: {
     canonical: '/',
+    languages: {
+      'en-NP': 'https://reliefnepal.org.np',
+      'ne-NP': 'https://reliefnepal.org.np/ne',
+      'x-default': 'https://reliefnepal.org.np',
+    },
+  },
+  other: {
+    'theme-color': '#087943',
+    'color-scheme': 'light',
   },
 };
 
 export default function HomePage() {
+  const breadcrumbData = breadcrumbSchema([{ name: 'Home', url: '/' }]);
+  const webPageData = webPageSchema({
+    name: 'Relief Nepal | Community, dignity, hope',
+    description: 'Building self-reliant, equitable communities across Nepal through community-led development.',
+    url: 'https://reliefnepal.org.np/',
+    image: '/images/og-home.jpg',
+    isPartOf: true,
+  });
+  const navData = navigationSchema([
+    { position: 1, name: 'About', url: '/about' },
+    { position: 2, name: 'Projects', url: '/projects' },
+    { position: 3, name: 'Impact', url: '/impact' },
+    { position: 4, name: 'Stories', url: '/stories' },
+    { position: 5, name: 'Gallery', url: '/gallery' },
+    { position: 6, name: 'Notices', url: '/notice' },
+    { position: 7, name: 'Vacancies', url: '/vacancies' },
+    { position: 8, name: 'Network', url: '/network' },
+    { position: 9, name: 'Contact', url: '/contact' },
+    { position: 10, name: 'Get Involved', url: '/get-involved' },
+  ]);
+
   return (
     <>
-      <JsonLd key="home-breadcrumb" data={breadcrumbSchema([{ name: 'Home', url: '/' }])} />
+      <JsonLd key="home-breadcrumb" data={breadcrumbData} />
+      <JsonLd key="home-webpage" data={webPageData} />
+      <JsonLd key="home-navigation" data={navData} />
       <JsonLd key="home-org" data={organizationSchema} />
       <main className="rn-site">
-        <RnHero
-          images={homeHeroSlides}
-          eyebrow="Relief Nepal · Community-led development"
-          title="Building self-reliant, equitable communities across Nepal"
-          text="We partner with children, youth, women and marginalized groups to strengthen rights, opportunity and resilience."
-        />
+        <RnHero images={homeHeroSlides} />
 
         <DistrictMapSection />
+
+        <ForexSection />
 
         <HomePageClient />
 

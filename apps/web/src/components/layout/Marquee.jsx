@@ -24,7 +24,7 @@ const socialLinks = [
 
 export default function Marquee() {
   return (
-    <div className="border-b border-white/10 bg-forest-800 text-white">
+    <div className="fixed top-0 left-0 right-0 z-40 border-b border-white/10 bg-forest-800 text-white">
       <div className="rn-container flex min-h-11 items-center justify-between gap-4 py-2">
         <p className="text-xs font-semibold tracking-wide sm:text-sm">
           <span lang="ne" className="mr-2">

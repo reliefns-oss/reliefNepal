@@ -26,7 +26,9 @@ function formatStatus(value) {
 
 function getProjectPeriod(project) {
   if (project.period) return project.period;
-  return [project.starts_on, project.ends_on].filter(Boolean).join(' – ') || null;
+  return (
+    [project.starts_on, project.ends_on].filter(Boolean).join(' – ') || null
+  );
 }
 
 export default function ProgramsPageClient() {
@@ -100,7 +102,10 @@ export default function ProgramsPageClient() {
 
       for (const section of programSections) {
         const element = document.getElementById(section.id);
-        if (element && element.getBoundingClientRect().top + window.scrollY <= marker) {
+        if (
+          element &&
+          element.getBoundingClientRect().top + window.scrollY <= marker
+        ) {
           current = section.id;
         }
       }
@@ -236,7 +241,9 @@ export default function ProgramsPageClient() {
                   aria-labelledby={`${section.id}-title`}
                 >
                   <div className={styles.sectionHeadingRow}>
-                    <span className={styles.sectionNumber}>{section.number}</span>
+                    <span className={styles.sectionNumber}>
+                      {section.number}
+                    </span>
                     <div>
                       <p className={styles.sectionKicker}>Program area</p>
                       <h2 id={`${section.id}-title`}>{program.name}</h2>
@@ -244,7 +251,7 @@ export default function ProgramsPageClient() {
                   </div>
                   <p className={styles.programDescription}>
                     {program.description ||
-                      'This program area brings Relief Nepal\'s community partnerships and projects together around shared priorities.'}
+                      "This program area brings Relief Nepal's community partnerships and projects together around shared priorities."}
                   </p>
 
                   <div className={styles.sectionDivider} />
@@ -314,7 +321,8 @@ export default function ProgramsPageClient() {
                                 href={`/projects/${project.slug}`}
                                 className={styles.projectLink}
                               >
-                                Read project details <span aria-hidden="true">→</span>
+                                Read project details{' '}
+                                <span aria-hidden="true">→</span>
                               </Link>
                             </div>
                           </article>
@@ -338,8 +346,8 @@ export default function ProgramsPageClient() {
               <section className={styles.emptyState} aria-live="polite">
                 <p>No published program areas are available yet.</p>
                 <span>
-                  Please check back soon as Relief Nepal&apos;s program information
-                  is updated.
+                  Please check back soon as Relief Nepal&apos;s program
+                  information is updated.
                 </span>
               </section>
             )}
@@ -359,9 +367,13 @@ export default function ProgramsPageClient() {
                 <a
                   href="#overview"
                   className={
-                    activeSection === 'overview' ? styles.tocItemActive : styles.tocItem
+                    activeSection === 'overview'
+                      ? styles.tocItemActive
+                      : styles.tocItem
                   }
-                  aria-current={activeSection === 'overview' ? 'location' : undefined}
+                  aria-current={
+                    activeSection === 'overview' ? 'location' : undefined
+                  }
                 >
                   Overview
                 </a>

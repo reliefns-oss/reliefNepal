@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import SeoComponents from '../../../../components/seo/SeoComponents.jsx';
-import { breadcrumbSchema, organizationSchema, articleSchema } from '../../../../lib/seo.js';
+import { breadcrumbSchema, organizationSchema, articleSchema, webPageSchema } from '../../../../lib/seo.js';
 
 const apiBase = (
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
@@ -34,6 +34,7 @@ export async function generateMetadata({ params }) {
   if (!notice) {
     return { title: 'Notice not found | Relief Nepal' };
   }
+  const url = `/notice/${slug}`;
   return {
     title: `${notice.title} | Relief Nepal`,
     description: notice.body?.slice(0, 160) || `Official notice: ${notice.title}`,
@@ -42,6 +43,10 @@ export async function generateMetadata({ params }) {
       description: notice.body?.slice(0, 160) || `Official notice: ${notice.title}`,
       type: 'article',
       publishedTime: notice.published_at,
+      modifiedTime: notice.updated_at || notice.published_at,
+      authors: ['Relief Nepal'],
+      section: 'Notices',
+      tags: ['notice', 'announcement', 'relief nepal'],
       images: notice.image_url ? [{ url: notice.image_url, width: 1200, height: 630, alt: notice.title }] : [],
     },
     twitter: {
@@ -51,7 +56,16 @@ export async function generateMetadata({ params }) {
       images: notice.image_url ? [notice.image_url] : [],
     },
     alternates: {
-      canonical: `/notice/${slug}`,
+      canonical: url,
+      languages: {
+        'en-NP': `https://reliefnepal.org.np${url}`,
+        'ne-NP': `https://reliefnepal.org.np/ne${url}`,
+        'x-default': `https://reliefnepal.org.np${url}`,
+      },
+    },
+    other: {
+      'theme-color': '#087943',
+      'color-scheme': 'light',
     },
   };
 }
@@ -68,7 +82,7 @@ export default async function NoticeDetailPage({ params }) {
   ]);
   const organizationData = organizationSchema;
   const articleData = articleSchema({
-    title: notice.title,
+    headline: notice.title,
     description: notice.body?.slice(0, 160) || `Official notice: ${notice.title}`,
     url: `/notice/${slug}`,
     image: notice.image_url,
@@ -76,6 +90,23 @@ export default async function NoticeDetailPage({ params }) {
     dateModified: notice.updated_at || notice.published_at,
     authorName: 'Relief Nepal',
     publisherName: 'Relief Nepal',
+    publisherLogo: '/images/logo.jpg',
+    mainEntityOfPage: `/notice/${slug}`,
+    speakableSections: ['.whitespace-pre-line', 'main article', '[role="main"]'],
+  });
+  const webPageData = webPageSchema({
+    name: notice.title,
+    description: notice.body?.slice(0, 160) || `Official notice: ${notice.title}`,
+    url: `/notice/${slug}`,
+    image: notice.image_url,
+    datePublished: notice.published_at,
+    dateModified: notice.updated_at || notice.published_at,
+    breadcrumb: [
+      { name: 'Home', url: '/' },
+      { name: 'Notices', url: '/notice' },
+      { name: notice.title, url: `/notice/${slug}` }
+    ],
+    isPartOf: true,
   });
 
   return (
@@ -84,6 +115,7 @@ export default async function NoticeDetailPage({ params }) {
         breadcrumb={breadcrumbData}
         organization={organizationData}
         article={articleData}
+        webPage={webPageData}
       />
       <main className="min-h-[65vh] bg-[#f7f8f5] px-5 py-14 text-[#183a2a] sm:py-20">
         <article className="mx-auto max-w-3xl">

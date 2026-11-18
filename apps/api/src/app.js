@@ -9,6 +9,7 @@ import { projectRoutes } from './modules/projects/project.routes.js';
 import { inquiryRoutes } from './modules/inquiries/inquiry.routes.js';
 import { adminRoutes } from './modules/admin/admin.routes.js';
 import { contentRoutes } from './modules/content/content.routes.js';
+import { feedbackRoutes } from './modules/feedback/feedback.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
 
 export const app = express();
@@ -43,6 +44,7 @@ app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1', contentRoutes);
 app.use('/api/v1/inquiries', submissionLimiter, inquiryRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/feedback', submissionLimiter, feedbackRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

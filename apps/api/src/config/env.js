@@ -39,4 +39,17 @@ export const env = {
   get jwtConfigured() {
     return Boolean(this.jwtSecret && this.jwtSecret.length >= 32);
   },
+
+  // Email Configuration
+  smtpHost: process.env.SMTP_HOST || '',
+  smtpPort: Number(process.env.SMTP_PORT || 587),
+  smtpSecure: process.env.SMTP_SECURE || 'false',
+  smtpUser: process.env.SMTP_USER || '',
+  smtpPass: process.env.SMTP_PASSWORD || '',
+  emailFrom: process.env.EMAIL_FROM || '"Relief Nepal" <noreply@reliefnepal.org.np>',
+  feedbackEmail: process.env.FEEDBACK_EMAIL || 'feedback@reliefnepal.org.np',
+
+  get emailConfigured() {
+    return Boolean(this.smtpHost && this.smtpUser && this.smtpPass);
+  },
 };

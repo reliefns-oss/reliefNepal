@@ -1,11 +1,13 @@
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://reliefnepal.org.np';
+
 export default function robots() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://reliefnepal.org.np';
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/', '/_next/', '/static/', '/*.json$'],
+        disallow: ['/api/', '/admin/', '/_next/', '/static/', '/private/'],
+        crawlDelay: 10,
       },
       {
         userAgent: 'GPTBot',
@@ -19,8 +21,20 @@ export default function robots() {
         userAgent: 'CCBot',
         disallow: '/',
       },
+      {
+        userAgent: 'anthropic-ai',
+        disallow: '/',
+      },
+      {
+        userAgent: 'Claude-Web',
+        disallow: '/',
+      },
+      {
+        userAgent: 'PerplexityBot',
+        disallow: '/',
+      },
     ],
-    sitemap: `${base}/sitemap.xml`,
-    host: base,
+    sitemap: `${siteUrl}/sitemap.xml`,
+    host: siteUrl,
   };
 }

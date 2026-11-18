@@ -1,6 +1,6 @@
 import VacancyList from '../../../components/vacancies/VacancyList.jsx';
 import JsonLd from '../../../components/seo/JsonLd.jsx';
-import { breadcrumbSchema, organizationSchema, faqSchema } from '../../../lib/seo.js';
+import { breadcrumbSchema, organizationSchema, faqSchema, webPageSchema, navigationSchema } from '../../../lib/seo.js';
 
 export const metadata = {
   title: 'Vacancies & Career Opportunities | Relief Nepal',
@@ -29,14 +29,39 @@ export const metadata = {
   },
   alternates: {
     canonical: '/vacancies',
+    languages: {
+      'en-NP': 'https://reliefnepal.org.np/vacancies',
+      'ne-NP': 'https://reliefnepal.org.np/ne/vacancies',
+      'x-default': 'https://reliefnepal.org.np/vacancies',
+    },
+  },
+  other: {
+    'theme-color': '#087943',
+    'color-scheme': 'light',
   },
 };
 
 export default function VacanciesPage() {
+  const breadcrumbData = breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'Vacancies', url: '/vacancies' }]);
+  const webPageData = webPageSchema({
+    name: 'Vacancies & Career Opportunities | Relief Nepal',
+    description: 'Find current openings, role details, requirements, and application instructions for positions across our programs.',
+    url: '/vacancies',
+    image: '/images/og-vacancies.jpg',
+    breadcrumb: [{ name: 'Home', url: '/' }, { name: 'Vacancies', url: '/vacancies' }],
+    isPartOf: true,
+  });
+  const navData = navigationSchema([
+    { position: 1, name: 'All Vacancies', url: '/vacancies' },
+    { position: 2, name: 'Current Openings', url: '/vacancies' },
+  ]);
+
   return (
     <>
-      <JsonLd key="vacancies-breadcrumb" data={breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'Vacancies', url: '/vacancies' }])} />
+      <JsonLd key="vacancies-breadcrumb" data={breadcrumbData} />
       <JsonLd key="vacancies-org" data={organizationSchema} />
+      <JsonLd key="vacancies-webpage" data={webPageData} />
+      <JsonLd key="vacancies-navigation" data={navData} />
       <JsonLd
         key="vacancies-faq"
         data={faqSchema([
@@ -50,7 +75,7 @@ export default function VacanciesPage() {
           },
           {
             question: 'Where are Relief Nepal\'s job locations?',
-            answer: 'Relief Nepal operates primarily in Bagmati, Madhesh, and Koshi provinces. Job locations are specified in each vacancy listing.',
+            answer: 'Relief Nepal operates primarily in Bagmati, Madhesh, and Karnali provinces. Job locations are specified in each vacancy listing.',
           },
         ])}
       />

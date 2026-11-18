@@ -7,3 +7,4 @@ export { vacancyRepository } from './vacancy.repository.js';
 export { procurementRepository } from './procurement.repository.js';
 export { boardRepository } from './board.repository.js';
 export { newsletterRepository } from './newsletter.repository.js';
+export { feedbackRepository } from './feedback.repository.js';

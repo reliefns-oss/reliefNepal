@@ -26,8 +26,8 @@ const categories = [
   },
   {
     id: 'resource_provider',
-    label: 'Resource Provider / Partner',
-    shortLabel: 'Resource providers',
+    label: 'Fund Provider / Partner',
+    shortLabel: 'Funding Partners',
     description:
       'Organizations contributing expertise, resources, funding, or technical support.',
     color: 'resource',

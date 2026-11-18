@@ -12,9 +12,9 @@ const AUTOPLAY_MS = 6500;
  */
 export default function RnHero({
   images = ['/images/Picture7.png'],
-  eyebrow = 'Relief Nepal',
-  title = 'Building self-reliant, equitable communities across Nepal',
-  text = 'We empower children, youth, women and marginalized groups to take part in decisions that shape their lives and livelihoods.',
+  eyebrow,
+  title,
+  text,
 }) {
   const configuredImages =
     Array.isArray(images) && images.length ? images : ['/images/Picture7.png'];
@@ -130,61 +130,11 @@ export default function RnHero({
         ))}
       </div>
 
-      {/* Overlays */}
-      <div className="rn-home-hero-shade" aria-hidden="true" />
-      <div
-        className="rn-home-hero-glow rn-home-hero-glow-a"
-        aria-hidden="true"
-      />
-      <div
-        className="rn-home-hero-glow rn-home-hero-glow-b"
-        aria-hidden="true"
-      />
+      {/* Bottom fade overlay for control bar visibility */}
+      <div className="rn-home-hero-bottom-fade" aria-hidden="true" />
 
-      {/* Content */}
-      <div className="rn-container rn-home-hero-content">
-        <p className="rn-home-hero-eyebrow">
-          <span className="rn-home-hero-pulse" aria-hidden="true" />
-          {eyebrow}
-        </p>
-        <h1 className="rn-home-hero-title">{title}</h1>
-        <p className="rn-home-hero-text">{text}</p>
-
-        <div className="rn-home-hero-actions">
-          <Link
-            className="rn-home-button rn-home-button-primary"
-            href="/projects"
-          >
-            Explore Our Work
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <path
-                d="M5 12h14M13 6l6 6-6 6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-          <Link
-            className="rn-home-button rn-home-button-outline"
-            href="/get-involved"
-          >
-            Get Involved
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <path
-                d="M5 12h14M13 6l6 6-6 6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-        </div>
-      </div>
+      {/* Content - no text, no buttons */}
+      <div className="rn-container rn-home-hero-content" />
 
       {/* Bottom control bar */}
       {total > 1 && (

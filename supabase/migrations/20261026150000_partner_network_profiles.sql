@@ -1,5 +1,5 @@
 -- Expand existing network partner records into public partner profiles.
--- Historical affiliations remain visible as resource providers after the
+-- Historical affiliations remain visible as Funding Partners after the
 -- network is simplified to its two supported categories.
 
 alter table public.network_partners

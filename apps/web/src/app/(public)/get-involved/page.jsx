@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import JsonLd from '../../../components/seo/JsonLd.jsx';
-import { breadcrumbSchema, organizationSchema, faqSchema } from '../../../lib/seo.js';
+import { breadcrumbSchema, organizationSchema, faqSchema, webPageSchema, navigationSchema } from '../../../lib/seo.js';
 
 export const metadata = {
   title: 'Get Involved | Support, Volunteer, Join Relief Nepal',
@@ -29,6 +29,15 @@ export const metadata = {
   },
   alternates: {
     canonical: '/get-involved',
+    languages: {
+      'en-NP': 'https://reliefnepal.org.np/get-involved',
+      'ne-NP': 'https://reliefnepal.org.np/ne/get-involved',
+      'x-default': 'https://reliefnepal.org.np/get-involved',
+    },
+  },
+  other: {
+    'theme-color': '#087943',
+    'color-scheme': 'light',
   },
 };
 
@@ -57,10 +66,27 @@ const opportunities = [
 ];
 
 export default function GetInvolvedPage() {
+  const breadcrumbData = breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'Get Involved', url: '/get-involved' }]);
+  const webPageData = webPageSchema({
+    name: 'Get Involved | Relief Nepal',
+    description: 'Support our work, explore procurement opportunities, or become a member. Join us in building equitable communities.',
+    url: '/get-involved',
+    image: '/images/og-get-involved.jpg',
+    breadcrumb: [{ name: 'Home', url: '/' }, { name: 'Get Involved', url: '/get-involved' }],
+    isPartOf: true,
+  });
+  const navData = navigationSchema([
+    { position: 1, name: 'Support', url: '/contact' },
+    { position: 2, name: 'Procurement', url: '/procurement' },
+    { position: 3, name: 'Membership', url: '/get-involved/membership' },
+  ]);
+
   return (
     <>
-      <JsonLd key="getinvolved-breadcrumb" data={breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'Get Involved', url: '/get-involved' }])} />
+      <JsonLd key="getinvolved-breadcrumb" data={breadcrumbData} />
       <JsonLd key="getinvolved-org" data={organizationSchema} />
+      <JsonLd key="getinvolved-webpage" data={webPageData} />
+      <JsonLd key="getinvolved-navigation" data={navData} />
       <JsonLd
         key="getinvolved-faq"
         data={faqSchema([

@@ -4,10 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 
 const workAreas = [
   {
-    province: 'Koshi Province',
-    districts: [{ id: 'udayapur', name: 'Udayapur' }],
-  },
-  {
     province: 'Bagmati Province',
     districts: [
       { id: 'sindhuli', name: 'Sindhuli' },
@@ -20,11 +16,15 @@ const workAreas = [
   {
     province: 'Madhesh Province',
     districts: [
-      { id: 'dhanusha', name: 'Dhanusha' },
       { id: 'mahottari', name: 'Mahottari' },
       { id: 'sarlahi', name: 'Sarlahi' },
       { id: 'rautahat', name: 'Rautahat' },
+      { id: 'bara', name: 'Bara' },
     ],
+  },
+  {
+    province: 'Karnali Province',
+    districts: [{ id: 'jajarkot', name: 'Jajarkot' }],
   },
 ];
 
@@ -53,7 +53,7 @@ export default function DistrictMapSection() {
   // Load the SVG map once.
   useEffect(() => {
     let active = true;
-    fetch('/images/nepal-active-districts.svg?v=2', { cache: 'force-cache' })
+    fetch('/images/nepal-active-districts.svg?v=3', { cache: 'force-cache' })
       .then((response) => {
         if (!response.ok) throw new Error('Map unavailable');
         return response.text();

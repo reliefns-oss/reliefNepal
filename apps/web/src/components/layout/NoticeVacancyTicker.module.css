@@ -1,0 +1,113 @@
+.bar {
+  position: sticky;
+  top: 7.75rem;
+  z-index: 20;
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 1rem;
+  overflow: hidden;
+  border-bottom: 1px solid #d6e5dc;
+  background: #f3f8f4;
+  color: #173a28;
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem 0 1.5rem;
+  background: #e4f0e7;
+  color: #07552f;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.viewport {
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 1.5rem,
+    #000 95%,
+    transparent
+  );
+}
+
+.track,
+.group {
+  display: flex;
+  width: max-content;
+  align-items: center;
+}
+
+.track {
+  animation: ticker-scroll 40s linear infinite;
+}
+
+.group {
+  flex: 0 0 auto;
+  gap: 2.25rem;
+  padding-right: 2.25rem;
+}
+
+.bar:hover .track,
+.bar:focus-within .track {
+  animation-play-state: paused;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.item:hover {
+  color: #087943;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.type {
+  border-radius: 999px;
+  background: #07552f;
+  padding: 0.15rem 0.5rem;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@keyframes ticker-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .bar {
+    gap: 0;
+  }
+
+  .label {
+    padding-inline: 0.75rem;
+    font-size: 0.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

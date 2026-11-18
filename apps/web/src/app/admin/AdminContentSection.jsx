@@ -76,7 +76,7 @@ const definitions = {
       ['publication_status', 'Publication', 'select:draft,published,archived'],
     ],
     label: (item) =>
-      `${item.relationship_type === 'local_district' ? 'Local / District Partner' : 'Resource Provider / Partner'} | ${item.publication_status}`,
+      `${item.relationship_type === 'local_district' ? 'Local / District Partner' : 'Fund Provider / Partner'} | ${item.publication_status}`,
   },
   notices: {
     heading: 'Notices',
@@ -221,38 +221,27 @@ const definitions = {
       ['title', 'Procurement title', 'text'],
       ['slug', 'URL slug (generated from title; editable)', 'slug'],
       ['reference_number', 'Reference number', 'text'],
-      [
-        'category',
-        'Category',
-        'select:goods,services,works,general',
-      ],
+      ['category', 'Category', 'select:goods,services,works,general'],
       ['description', 'Description', 'textarea'],
       ['requirements', 'Requirements / Specifications', 'textarea'],
       ['submission_instructions', 'Submission instructions', 'textarea'],
-      [
-        'submission_email',
-        'Submission email',
-        'email',
-      ],
+      ['submission_email', 'Submission email', 'email'],
       ['submission_url', 'Submission URL (optional)', 'url'],
-      ['attachment_url', 'Attachment (PDF, DOC, etc.)', 'procurement-attachment'],
-      ['deadline', 'Submission deadline', 'date'],
       [
-        'status',
-        'Status',
-        'select:draft,open,closed,awarded,cancelled',
+        'attachment_url',
+        'Attachment (PDF, DOC, etc.)',
+        'procurement-attachment',
       ],
+      ['deadline', 'Submission deadline', 'date'],
+      ['status', 'Status', 'select:draft,open,closed,awarded,cancelled'],
       ['location', 'Location (optional)', 'text'],
       ['duration', 'Duration / Contract period (optional)', 'text'],
       ['work_schedule', 'Work schedule / Timeline (optional)', 'text'],
       ['display_order', 'Display order (lower numbers appear first)', 'number'],
-      [
-        'publication_status',
-        'Publication',
-        'select:draft,published,archived',
-      ],
+      ['publication_status', 'Publication', 'select:draft,published,archived'],
     ],
-    label: (item) => `${item.category} | ${item.status} | ${item.publication_status}`,
+    label: (item) =>
+      `${item.category} | ${item.status} | ${item.publication_status}`,
   },
   programs: {
     heading: 'Programs',
@@ -400,7 +389,14 @@ export default function AdminContentSection({ type, request }) {
 
   function showMessage(text, tone = 'success') {
     toast({
-      title: tone === 'success' ? 'Success' : tone === 'error' ? 'Error' : tone === 'warning' ? 'Warning' : 'Info',
+      title:
+        tone === 'success'
+          ? 'Success'
+          : tone === 'error'
+            ? 'Error'
+            : tone === 'warning'
+              ? 'Warning'
+              : 'Info',
       description: text,
       type: tone,
       duration: tone === 'error' ? 8000 : 5000,
@@ -494,7 +490,11 @@ export default function AdminContentSection({ type, request }) {
       method: 'POST',
       body: JSON.stringify({
         public_id: signed.public_id,
-        secure_url: uploaded.media_url || uploaded.image_url || uploaded.logo_url || uploaded.banner_url,
+        secure_url:
+          uploaded.media_url ||
+          uploaded.image_url ||
+          uploaded.logo_url ||
+          uploaded.banner_url,
       }),
     });
   }
@@ -512,7 +512,9 @@ export default function AdminContentSection({ type, request }) {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ];
     const isDocPurpose = purpose === 'procurement-attachment';
-    const allowedTypes = isDocPurpose ? [...imageTypes, ...docTypes] : imageTypes;
+    const allowedTypes = isDocPurpose
+      ? [...imageTypes, ...docTypes]
+      : imageTypes;
     const maxSize = 16 * 1024 * 1024; // 16 MB for documents
 
     if (!allowedTypes.includes(file.type) || file.size > maxSize) {
@@ -775,7 +777,9 @@ export default function AdminContentSection({ type, request }) {
             item.relationship_type === networkCategory;
           return (
             matchesCategory &&
-            item.name.toLocaleLowerCase().includes(networkSearch.trim().toLocaleLowerCase())
+            item.name
+              .toLocaleLowerCase()
+              .includes(networkSearch.trim().toLocaleLowerCase())
           );
         })
       : items;
@@ -1252,12 +1256,20 @@ export default function AdminContentSection({ type, request }) {
                   {form.attachment_url && (
                     <div className="mt-3 flex items-center gap-3 rounded-lg border border-slate-200 p-3">
                       <div className="flex items-center gap-3">
-                        <svg className="h-10 w-10 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                        <svg
+                          className="h-10 w-10 text-slate-400"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
                           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 6.5L17.5 9H13v-2.5zM9 15H7v-4h2v4zm4 0h-2v-4h2v4zm4 0h-2v-4h2v4z" />
                         </svg>
                         <div>
-                          <p className="font-medium text-slate-900">Attachment</p>
-                          <p className="text-sm text-slate-500">Ready to publish</p>
+                          <p className="font-medium text-slate-900">
+                            Attachment
+                          </p>
+                          <p className="text-sm text-slate-500">
+                            Ready to publish
+                          </p>
                         </div>
                       </div>
                       <button
@@ -1566,8 +1578,12 @@ export default function AdminContentSection({ type, request }) {
                     className="mt-1 block w-full rounded-md border bg-white px-3 py-2 text-sm font-normal text-slate-900"
                   >
                     <option value="all">All categories</option>
-                    <option value="local_district">Local / District Partner</option>
-                    <option value="resource_provider">Resource Provider / Partner</option>
+                    <option value="local_district">
+                      Local / District Partner
+                    </option>
+                    <option value="resource_provider">
+                      Fund Provider / Partner
+                    </option>
                   </select>
                 </label>
               </div>
@@ -1578,8 +1594,8 @@ export default function AdminContentSection({ type, request }) {
               </p>
             ) : (
               <div className="divide-y">
-                {(type === 'networks' ? visibleNetworkItems : items).map((item) =>
-                  renderItem(item),
+                {(type === 'networks' ? visibleNetworkItems : items).map(
+                  (item) => renderItem(item),
                 )}
               </div>
             )}

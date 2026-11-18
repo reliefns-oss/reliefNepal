@@ -1,6 +1,6 @@
 import ProcurementList from '../../../components/procurement/ProcurementList.tsx';
 import JsonLd from '../../../components/seo/JsonLd.jsx';
-import { breadcrumbSchema, organizationSchema, faqSchema } from '../../../lib/seo.js';
+import { breadcrumbSchema, organizationSchema, faqSchema, webPageSchema, navigationSchema } from '../../../lib/seo.js';
 
 export const metadata = {
   title: 'Procurement Opportunities | Relief Nepal',
@@ -29,21 +29,48 @@ export const metadata = {
   },
   alternates: {
     canonical: '/procurement',
+    languages: {
+      'en-NP': 'https://reliefnepal.org.np/procurement',
+      'ne-NP': 'https://reliefnepal.org.np/ne/procurement',
+      'x-default': 'https://reliefnepal.org.np/procurement',
+    },
+  },
+  other: {
+    'theme-color': '#087943',
+    'color-scheme': 'light',
   },
 };
 
 export default function ProcurementPage() {
+  const breadcrumbData = breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Get Involved', url: '/get-involved' },
+    { name: 'Procurement', url: '/procurement' },
+  ]);
+  const webPageData = webPageSchema({
+    name: 'Procurement Opportunities | Relief Nepal',
+    description: 'Find current tenders, procurement notices, and calls for proposals with details and submission instructions.',
+    url: '/procurement',
+    image: '/images/og-procurement.jpg',
+    breadcrumb: [
+      { name: 'Home', url: '/' },
+      { name: 'Get Involved', url: '/get-involved' },
+      { name: 'Procurement', url: '/procurement' },
+    ],
+    isPartOf: true,
+  });
+  const navData = navigationSchema([
+    { position: 1, name: 'All Opportunities', url: '/procurement' },
+    { position: 2, name: 'Current Tenders', url: '/procurement' },
+    { position: 3, name: 'Calls for Proposals', url: '/procurement' },
+  ]);
+
   return (
     <>
-      <JsonLd
-        key="procurement-breadcrumb"
-        data={breadcrumbSchema([
-          { name: 'Home', url: '/' },
-          { name: 'Get Involved', url: '/get-involved' },
-          { name: 'Procurement', url: '/procurement' },
-        ])}
-      />
+      <JsonLd key="procurement-breadcrumb" data={breadcrumbData} />
       <JsonLd key="procurement-org" data={organizationSchema} />
+      <JsonLd key="procurement-webpage" data={webPageData} />
+      <JsonLd key="procurement-navigation" data={navData} />
       <JsonLd
         key="procurement-faq"
         data={faqSchema([
