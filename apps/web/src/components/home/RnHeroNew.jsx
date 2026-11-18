@@ -1,27 +1,45 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import NepaliDate from 'nepali-date-converter';
 import ForexSection from './ForexSection.jsx';
+import { NEPALI_HOLIDAYS } from './nepali-holidays.js';
 import './rn-hero-new.css';
 
 const AUTOPLAY_MS = 6500;
 
 const NEPALI_MONTHS = [
-  'बैशाख', 'जेठ', 'असार', 'श्रावण', 'भदौ', 'आश्विन',
-  'कार्तिक', 'मंसिर', 'पुष', 'माघ', 'फाल्गुन', 'चैत्र'
+  'बैशाख', 'जेठ', 'असार', 'साउन', 'भदौ', 'असोज',
+  'कार्तिक', 'मंसिर', 'पुष', 'माघ', 'फागुन', 'चैत',
 ];
 
-const ENGLISH_MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
-];
-
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const NEPALI_DAYS = ['आइत', 'सोम', 'मङ्गल', 'बुध', 'बिही', 'शुक्र', 'शनि'];
+const NEPALI_DIGITS = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+const toNepaliDigits = (value) =>
+  String(value).replace(/\d/g, (digit) => NEPALI_DIGITS[Number(digit)]);
+
+function getNepalToday() {
+  const dateParts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Kathmandu',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .formatToParts(new Date())
+    .reduce((parts, part) => ({ ...parts, [part.type]: part.value }), {});
+  const localDate = new Date(
+    Number(dateParts.year),
+    Number(dateParts.month) - 1,
+    Number(dateParts.day),
+    12,
+  );
+  return new NepaliDate(localDate);
+}
 
 export default function RnHeroNew({
   images = ['/images/Picture7.png'],
+  initialCalendarDate,
 }) {
   const configuredImages =
     Array.isArray(images) && images.length ? images : ['/images/Picture7.png'];
@@ -112,16 +130,42 @@ export default function RnHeroNew({
   }, [active, paused, reduced, total, go]);
 
   // Calendar state
-  const [calendarDate, setCalendarDate] = useState(new Date());
+  const [calendarDate, setCalendarDate] = useState(() => {
+    if (!initialCalendarDate) return getNepalToday();
+    const [year, month, day] = initialCalendarDate.split('-').map(Number);
+    return new NepaliDate(new Date(year, month - 1, day, 12));
+  });
+  const [today, setToday] = useState(calendarDate);
+  const [selectedHoliday, setSelectedHoliday] = useState(null);
+
+  useEffect(() => {
+    const currentDate = getNepalToday();
+    setCalendarDate(currentDate);
+    setToday(currentDate);
+  }, []);
 
   const currentMonth = calendarDate.getMonth();
-  const currentYear = calendarDate.getFullYear();
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const today = new Date();
-  const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+  const currentYear = calendarDate.getYear();
+  const firstDay = new NepaliDate(currentYear, currentMonth, 1).getDay();
+  const monthEnd = new NepaliDate(currentYear, currentMonth, 1);
+  monthEnd.setMonth(currentMonth + 1);
+  monthEnd.setDate(0);
+  const daysInMonth = monthEnd.getDate();
+  const isCurrentMonth =
+    today.getYear() === currentYear && today.getMonth() === currentMonth;
 
   const pad = (n) => String(n).padStart(2, '0');
+  const changeCalendarMonth = (offset) => {
+    const nextMonth = new NepaliDate(currentYear, currentMonth, 1);
+    nextMonth.setMonth(currentMonth + offset);
+    setCalendarDate(nextMonth);
+    setSelectedHoliday(null);
+  };
+  const holidaysByDate = new Map(
+    NEPALI_HOLIDAYS
+      .filter((holiday) => holiday.year === currentYear && holiday.month === currentMonth + 1)
+      .map((holiday) => [holiday.day, holiday]),
+  );
 
   return (
     <section
@@ -151,62 +195,83 @@ export default function RnHeroNew({
       <div className="rn-home-hero-new-bottom-fade" aria-hidden="true" />
 
       {/* Right sidebar - Calendar & Forex (20%) */}
-      <aside className="rn-home-hero-new-sidebar" aria-label="Calendar and exchange rates">
+      <aside className="rn-home-hero-new-sidebar" aria-label="नेपाली पात्रो र विनिमय दर">
         {/* Calendar */}
         <div className="rn-hero-calendar">
           <div className="rn-hero-calendar-header">
             <button
               className="rn-hero-calendar-nav"
-              onClick={() => setCalendarDate(new Date(currentYear, currentMonth - 1, 1))}
-              aria-label="Previous month"
+              onClick={() => changeCalendarMonth(-1)}
+              aria-label="अघिल्लो महिना"
             >
               <ChevronLeft size={20} />
             </button>
             <div className="rn-hero-calendar-title">
               <span className="rn-hero-calendar-month-nepali">{NEPALI_MONTHS[currentMonth]}</span>
-              <span className="rn-hero-calendar-month-english">{ENGLISH_MONTHS[currentMonth]}</span>
-              <span className="rn-hero-calendar-year">{currentYear}</span>
+              <span className="rn-hero-calendar-year">{toNepaliDigits(currentYear)}</span>
             </div>
             <button
               className="rn-hero-calendar-nav"
-              onClick={() => setCalendarDate(new Date(currentYear, currentMonth + 1, 1))}
-              aria-label="Next month"
+              onClick={() => changeCalendarMonth(1)}
+              aria-label="अर्को महिना"
             >
               <ChevronRight size={20} />
             </button>
           </div>
 
           <div className="rn-hero-calendar-weekdays">
-            {DAYS.map((day, i) => (
-              <span key={day} className={i === 0 ? 'sunday' : ''}>
+            {NEPALI_DAYS.map((day, i) => (
+              <span key={day} className={i === 0 || i === 6 ? 'weekend' : ''} title={`${day}बार`}>
                 {day}
-                <span className="rn-hero-calendar-weekday-nepali">{NEPALI_DAYS[i]}</span>
               </span>
             ))}
           </div>
 
           <div className="rn-hero-calendar-days">
-            {/* Empty cells before first day */}
             {Array.from({ length: firstDay }).map((_, i) => (
               <span key={`empty-${i}`} className="rn-hero-calendar-day empty" />
             ))}
 
-            {/* Days of the month */}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const dayNum = i + 1;
               const isToday = isCurrentMonth && dayNum === today.getDate();
-              const isSunday = (firstDay + i) % 7 === 0;
+              const isWeekend = [0, 6].includes((firstDay + i) % 7);
+              const holiday = holidaysByDate.get(dayNum);
+              const holidayLabel = [
+                holiday?.name,
+                isWeekend ? 'साप्ताहिक बिदा' : null,
+              ].filter(Boolean).join(', ');
               return (
-                <span
+                <button
+                  type="button"
                   key={dayNum}
-                  className={`rn-hero-calendar-day ${isToday ? 'today' : ''} ${isSunday ? 'sunday' : ''}`}
+                  className={`rn-hero-calendar-day ${isToday ? 'today' : ''} ${isWeekend ? 'weekend' : ''} ${holiday ? 'holiday' : ''} ${selectedHoliday?.day === dayNum ? 'selected-holiday' : ''}`}
+                  aria-label={`${NEPALI_MONTHS[currentMonth]} ${toNepaliDigits(dayNum)}${holidayLabel ? `, ${holidayLabel}` : ''}`}
+                  aria-pressed={selectedHoliday?.day === dayNum}
+                  title={holidayLabel || undefined}
+                  onClick={() => setSelectedHoliday(
+                    holiday || isWeekend
+                      ? { day: dayNum, festival: holiday, isWeekend }
+                      : null,
+                  )}
                 >
-                  {dayNum}
-                  <span className="rn-hero-calendar-tithi">टिही</span>
-                </span>
+                  {toNepaliDigits(dayNum)}
+                  {(holiday || isWeekend) && <span className="rn-hero-calendar-holiday-dot" aria-hidden="true" />}
+                </button>
               );
             })}
           </div>
+          {selectedHoliday && (
+            <div className="rn-hero-calendar-holiday-detail" aria-live="polite">
+              <strong>{selectedHoliday.festival?.name || 'साप्ताहिक बिदा'}</strong>
+              <span>
+                {[
+                  selectedHoliday.festival?.scope,
+                  selectedHoliday.isWeekend ? 'शनिबार / आइतबार' : null,
+                ].filter(Boolean).join(' · ')}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Forex Section */}

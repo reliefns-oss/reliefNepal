@@ -17,6 +17,7 @@ import {
   projectRepository,
   galleryRepository,
   noticeRepository,
+  governmentActionRepository,
   networkRepository,
   programRepository,
   vacancyRepository,
@@ -240,6 +241,7 @@ adminRoutes.post('/uploads/sign', (req, res) => {
   const collections = {
     'gallery-photo': 'gallery',
     'notice-photo': 'notices',
+    'government-action-photo': 'government-actions',
     'partner-logo': 'partners',
     'procurement-attachment': 'procurement',
     'board-photo': 'board',
@@ -341,6 +343,8 @@ adminRoutes.post('/uploads/verify', (req, res) => {
       ? { media_url: expectedUrl, media_public_id: publicId }
       : publicId.startsWith('relief-nepal/notices/')
         ? { image_url: expectedUrl, image_public_id: publicId }
+        : publicId.startsWith('relief-nepal/government-actions/')
+          ? { image_url: expectedUrl, image_public_id: publicId }
         : publicId.startsWith('relief-nepal/partners/')
           ? { logo_url: expectedUrl, logo_public_id: publicId }
           : publicId.startsWith('relief-nepal/procurement/')
@@ -700,6 +704,11 @@ function registerEditorCollection(
 }
 
 const publicationStatusIsValid = (value) => ['draft', 'published', 'archived'].includes(value);
+const isValidDate = (value) => {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+};
 
 registerEditorCollection(
   'gallery',
@@ -746,7 +755,15 @@ registerEditorCollection(
     return null;
   },
   {
-    transform: (field, value) => (field === 'project_id' ? value || null : value),
+    transform: (field, value) => {
+      // Convert empty strings to null for date fields
+      if (value === '' && ['published_at'].includes(field)) {
+        return null;
+      }
+      // Existing project_id handling
+      if (field === 'project_id') return value || null;
+      return value;
+    },
     mediaIdField: 'media_public_id',
   },
 );
@@ -845,6 +862,66 @@ registerEditorCollection(
     return null;
   },
   {
+    transform: (field, value) => {
+      // Convert empty strings to null for date fields
+      if (value === '' && ['published_at', 'expires_at'].includes(field)) {
+        return null;
+      }
+      return value;
+    },
+    mediaIdField: 'image_public_id',
+  },
+);
+
+registerEditorCollection(
+  'government-actions',
+  governmentActionRepository,
+  'id,slug,title,government_partner,action_date,summary,body,image_url,image_public_id,publication_status,published_at,created_at,updated_at',
+  [
+    'slug',
+    'title',
+    'government_partner',
+    'action_date',
+    'summary',
+    'body',
+    'image_url',
+    'image_public_id',
+    'publication_status',
+    'published_at',
+  ],
+  (item, patch = false) => {
+    if ((!patch || 'slug' in item) && (typeof item.slug !== 'string' || item.slug.length > 120 || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(item.slug)))
+      return 'Use a lowercase URL slug under 120 characters with single hyphens.';
+    if ((!patch || 'title' in item) && (typeof item.title !== 'string' || item.title.trim().length < 2 || item.title.trim().length > 255))
+      return 'Enter an initiative title between 2 and 255 characters.';
+    if ((!patch || 'government_partner' in item) && (typeof item.government_partner !== 'string' || item.government_partner.trim().length < 2 || item.government_partner.trim().length > 180))
+      return 'Enter the government body involved (2–180 characters).';
+    if ((!patch || 'action_date' in item) && !isValidDate(item.action_date))
+      return 'Choose a valid initiative date.';
+    if ((!patch || 'summary' in item) && (typeof item.summary !== 'string' || item.summary.trim().length < 10 || item.summary.trim().length > 600))
+      return 'Add a summary between 10 and 600 characters.';
+    if ((!patch || 'body' in item) && (typeof item.body !== 'string' || !item.body.trim() || item.body.trim().length > 20000))
+      return 'Add initiative details (up to 20,000 characters).';
+    if ('image_url' in item !== 'image_public_id' in item)
+      return 'Upload or remove the initiative photo before saving.';
+    if (
+      item.image_public_id &&
+      (typeof item.image_public_id !== 'string' || !item.image_public_id.startsWith('relief-nepal/government-actions/'))
+    )
+      return 'Upload the initiative photo through the secure image upload field.';
+    if ('publication_status' in item && !publicationStatusIsValid(item.publication_status))
+      return 'Choose draft, published, or archived.';
+    return null;
+  },
+  {
+    transform: (field, value) => {
+      if (field === 'action_date') return value || null;
+      if (['government_partner', 'summary', 'body'].includes(field) && typeof value === 'string')
+        return value.trim();
+      if (field === 'image_url' || field === 'image_public_id')
+        return typeof value === 'string' && value.trim() ? value.trim() : null;
+      return value;
+    },
     mediaIdField: 'image_public_id',
   },
 );
@@ -914,7 +991,22 @@ registerEditorCollection(
       return 'Add an application email or URL before opening this vacancy.';
     return null;
   },
-  { statusField: 'status', publishedValue: 'open' },
+  {
+    statusField: 'status',
+    publishedValue: 'open',
+    transform: (field, value) => {
+      // Convert empty strings to null for numeric and date fields
+      if (value === '' && [
+        'number_of_vacancies',
+        'hours_per_week',
+        'application_deadline',
+        'published_at',
+      ].includes(field)) {
+        return null;
+      }
+      return value;
+    },
+  },
 );
 
 registerEditorCollection(
@@ -974,6 +1066,13 @@ registerEditorCollection(
     statusField: 'status',
     publishedValue: 'open',
     mediaIdField: 'attachment_public_id',
+    transform: (field, value) => {
+      // Convert empty strings to null for date fields
+      if (value === '' && ['deadline', 'published_at'].includes(field)) {
+        return null;
+      }
+      return value;
+    },
   },
 );
 

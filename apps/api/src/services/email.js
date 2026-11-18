@@ -127,20 +127,23 @@ function formatFeedbackForEmail(feedback) {
 }
 
 /**
+ * Escape dynamic values before placing them in an HTML email.
+ */
+function escapeHtml(text) {
+  if (!text) return '<em>Not provided</em>';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/\n/g, '<br>');
+}
+
+/**
  * Format feedback data as HTML email
  */
-function formatFeedbackForHtml(feedback) {
-  const escapeHtml = (text) => {
-    if (!text) return '<em>Not provided</em>';
-    return text
-      .replace(/&/g, '&')
-      .replace(/</g, '<')
-      .replace(/>/g, '>')
-      .replace(/"/g, '"')
-      .replace(/'/g, '&#039;')
-      .replace(/\n/g, '<br>');
-  };
-
+export function formatFeedbackForHtml(feedback) {
   const statusBadge = feedback.is_confidential
     ? '<span style="background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-size: 12px;">Confidential</span>'
     : '<span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 12px;">Public</span>';
@@ -191,7 +194,7 @@ function formatFeedbackForHtml(feedback) {
 
   html += `
         <div style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 8px; font-size: 12px; color: #6b7280;">
-          <p style="margin: 0;"><strong>Reference ID:</strong> ${feedback.id}</p>
+          <p style="margin: 0;"><strong>Reference ID:</strong> ${escapeHtml(feedback.id)}</p>
           <p style="margin: 5px 0 0;"><strong>Submitted:</strong> ${new Date(feedback.created_at).toLocaleString('en-NP', { timeZone: 'Asia/Kathmandu' })}</p>
         </div>
       </div>

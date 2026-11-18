@@ -126,6 +126,34 @@ const definitions = {
     ],
     label: (item) => item.publication_status,
   },
+  'government-actions': {
+    heading: 'Joint Action with Government',
+    singular: 'government initiative',
+    path: 'government-actions',
+    blank: {
+      slug: '',
+      title: '',
+      government_partner: '',
+      action_date: '',
+      summary: '',
+      body: '',
+      image_url: null,
+      image_public_id: null,
+      publication_status: 'draft',
+    },
+    fields: [
+      ['title', 'Initiative title', 'text'],
+      ['slug', 'URL slug', 'slug'],
+      ['government_partner', 'Government body / partner', 'text'],
+      ['action_date', 'Initiative date', 'date'],
+      ['summary', 'Card summary', 'textarea'],
+      ['body', 'Full initiative details', 'textarea'],
+      ['image_url', 'Initiative photo', 'government-action-photo'],
+      ['publication_status', 'Publication', 'select:draft,published,archived'],
+    ],
+    label: (item) =>
+      `${item.government_partner} | ${item.publication_status}`,
+  },
   vacancies: {
     heading: 'Vacancies',
     singular: 'vacancy',
@@ -299,6 +327,14 @@ const requiredFields = {
   ],
   notices: ['title', 'slug'],
   stories: ['title', 'slug'],
+  'government-actions': [
+    'title',
+    'slug',
+    'government_partner',
+    'action_date',
+    'summary',
+    'body',
+  ],
   vacancies: [
     'title',
     'slug',
@@ -392,7 +428,7 @@ export default function AdminContentSection({ type, request }) {
   const [networkSearch, setNetworkSearch] = useState('');
   const [networkCategory, setNetworkCategory] = useState('all');
   const pendingPhotosRef = useRef(pendingPhotos);
-  const { toast } = useToast();
+  const { toast, clearToasts } = useToast();
 
   // Reset form when type changes (e.g., switching tabs)
   useEffect(() => {
@@ -414,6 +450,10 @@ export default function AdminContentSection({ type, request }) {
   );
 
   function showMessage(text, tone = 'success') {
+    if (!text?.trim()) {
+      clearToasts();
+      return;
+    }
     toast({
       title:
         tone === 'success'
@@ -569,6 +609,8 @@ export default function AdminContentSection({ type, request }) {
       showMessage(
         purpose === 'notice-photo'
           ? 'Notice photo uploaded. Save the notice to keep it.'
+          : purpose === 'government-action-photo'
+            ? 'Initiative photo uploaded. Save the initiative to keep it.'
           : purpose === 'partner-logo'
             ? 'Partner logo uploaded. Save the profile to keep it.'
             : purpose === 'procurement-attachment'
@@ -798,22 +840,37 @@ export default function AdminContentSection({ type, request }) {
   const visibleNetworkItems =
     type === 'networks'
       ? items.filter((item) => {
+          if (!item || typeof item !== 'object') return false;
           const matchesCategory =
             networkCategory === 'all' ||
             item.relationship_type === networkCategory;
+          const networkName =
+            typeof item.name === 'string' ? item.name : '';
           return (
             matchesCategory &&
-            item.name
+            networkName
               .toLocaleLowerCase()
               .includes(networkSearch.trim().toLocaleLowerCase())
           );
         })
       : items;
+  const networksMissingName =
+    type === 'networks' &&
+    items.some(
+      (item) =>
+        !item ||
+        typeof item !== 'object' ||
+        typeof item.name !== 'string' ||
+        !item.name.trim(),
+    );
 
-  function renderItem(item) {
+  function renderItem(item, index = 0) {
     return (
       <article
-        key={item.id}
+        key={
+          item.id ??
+          `${type}-${item.slug ?? item.name ?? 'item'}-${index}`
+        }
         className="flex flex-wrap items-center justify-between gap-3 p-4"
       >
         <div className="flex min-w-0 items-center gap-3">
@@ -828,7 +885,9 @@ export default function AdminContentSection({ type, request }) {
           )}
           <div className="min-w-0">
             <h3 className="truncate font-semibold text-slate-900">
-              {item.title || item.name}
+              {item.title ||
+                (typeof item.name === 'string' && item.name) ||
+                (type === 'networks' ? 'Unnamed partner' : '')}
             </h3>
             <p className="text-sm capitalize text-slate-500">
               {config.label(item)}
@@ -1150,12 +1209,15 @@ export default function AdminContentSection({ type, request }) {
                   )}
                 </div>
               );
-            if (['notices', 'stories'].includes(type) && key === 'image_url')
+            if (
+              ['notices', 'stories', 'government-actions'].includes(type) &&
+              key === 'image_url'
+            )
               return (
                 <div key={key} className="mt-4">
                   <span className="block text-sm font-semibold">{label}</span>
                   <p className="mt-1 text-xs font-normal text-slate-500">
-                    Add an image to display with the published notice.
+                    Add an image to display with the published content.
                   </p>
                   <label className="mt-2 block text-sm">
                     Upload a JPG, PNG, WebP, or AVIF photo (up to 8 MB)
@@ -1167,7 +1229,12 @@ export default function AdminContentSection({ type, request }) {
                         const input = event.currentTarget;
                         const file = input.files?.[0];
                         input.value = '';
-                        uploadPhoto(file, 'notice-photo');
+                        uploadPhoto(
+                          file,
+                          type === 'government-actions'
+                            ? 'government-action-photo'
+                            : 'notice-photo',
+                        );
                       }}
                       className="mt-1 block w-full rounded-lg border p-2.5 font-normal"
                     />
@@ -1315,7 +1382,16 @@ export default function AdminContentSection({ type, request }) {
                   )}
                 </div>
               );
-            if (['notices', 'vacancies'].includes(type) && key === 'title')
+            if (
+              [
+                'notices',
+                'stories',
+                'vacancies',
+                'procurement',
+                'government-actions',
+              ].includes(type) &&
+              key === 'title'
+            )
               return (
                 <label key={key} className="mt-4 block text-sm font-semibold">
                   {label}
@@ -1562,7 +1638,7 @@ export default function AdminContentSection({ type, request }) {
                   </span>
                 </header>
                 <div className="divide-y">
-                  {projectItems.map((item) => renderItem(item))}
+                  {projectItems.map((item, index) => renderItem(item, index))}
                 </div>
               </section>
             ))}
@@ -1577,7 +1653,9 @@ export default function AdminContentSection({ type, request }) {
                   </p>
                 </header>
                 <div className="divide-y">
-                  {unassignedGalleryItems.map((item) => renderItem(item))}
+                  {unassignedGalleryItems.map((item, index) =>
+                    renderItem(item, index),
+                  )}
                 </div>
               </section>
             )}
@@ -1614,6 +1692,15 @@ export default function AdminContentSection({ type, request }) {
                 </label>
               </div>
             )}
+            {networksMissingName && (
+              <p
+                role="alert"
+                className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+              >
+                One or more partner records are missing an organization name.
+                Edit those records to add a name.
+              </p>
+            )}
             {type === 'networks' && visibleNetworkItems.length === 0 ? (
               <p className="p-6 text-sm text-slate-500">
                 No partners match those filters. Try another search or category.
@@ -1621,7 +1708,7 @@ export default function AdminContentSection({ type, request }) {
             ) : (
               <div className="divide-y">
                 {(type === 'networks' ? visibleNetworkItems : items).map(
-                  (item) => renderItem(item),
+                  (item, index) => renderItem(item, index),
                 )}
               </div>
             )}

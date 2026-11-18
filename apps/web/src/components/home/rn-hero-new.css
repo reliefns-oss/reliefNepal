@@ -158,16 +158,6 @@
   letter-spacing: 0.02em;
 }
 
-.rn-hero-calendar-month-english {
-  display: block;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 0.1rem;
-}
-
 .rn-hero-calendar-year {
   display: block;
   font-size: 0.75rem;
@@ -194,15 +184,8 @@
   letter-spacing: 0.02em;
 }
 
-.rn-hero-calendar-weekdays .sunday {
+.rn-hero-calendar-weekdays .weekend {
   color: #f87171;
-}
-
-.rn-hero-calendar-weekday-nepali {
-  font-size: 0.55rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.35);
-  margin-top: 1px;
 }
 
 .rn-hero-calendar-days {
@@ -212,6 +195,11 @@
 }
 
 .rn-hero-calendar-day {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
   min-width: 0;
   aspect-ratio: 1;
   display: flex;
@@ -231,12 +219,18 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+.rn-hero-calendar-day:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 1px;
+}
+
 .rn-hero-calendar-day.empty {
   pointer-events: none;
 }
 
-.rn-hero-calendar-day.sunday {
+.rn-hero-calendar-day.weekend {
   color: #f87171;
+  background-color: rgba(248, 113, 113, 0.06);
 }
 
 .rn-hero-calendar-day.today {
@@ -246,16 +240,48 @@
   box-shadow: 0 4px 16px rgba(8, 121, 67, 0.4);
 }
 
-.rn-hero-calendar-tithi {
-  font-size: 0.5rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 1px;
-  white-space: nowrap;
+.rn-hero-calendar-day.holiday {
+  color: #fecaca;
 }
 
-.rn-hero-calendar-day.today .rn-hero-calendar-tithi {
-  color: rgba(255, 255, 255, 0.7);
+.rn-hero-calendar-day.today.holiday {
+  color: #fff;
+}
+
+.rn-hero-calendar-day.selected-holiday {
+  background-color: rgba(248, 113, 113, 0.18);
+}
+
+.rn-hero-calendar-day.today.selected-holiday {
+  background: linear-gradient(135deg, var(--hero-green), #15803d);
+}
+
+.rn-hero-calendar-holiday-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f87171;
+}
+
+.rn-hero-calendar-day .rn-hero-calendar-holiday-dot {
+  position: absolute;
+  bottom: 3px;
+}
+
+.rn-hero-calendar-holiday-detail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.5rem;
+  margin-top: 0.55rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 8px;
+  background: rgba(248, 113, 113, 0.1);
+  font-size: 0.7rem;
+}
+
+.rn-hero-calendar-holiday-detail span {
+  color: rgba(255, 255, 255, 0.65);
 }
 
 /* Forex Compact Styles */

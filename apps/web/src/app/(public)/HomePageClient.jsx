@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { apiRequest } from '../../lib/api/client.js';
+import GovernmentActionSection from '../../components/home/GovernmentActionSection.jsx';
 import {
   BookOpen,
   Briefcase,
@@ -216,6 +217,8 @@ export default function HomePageClient() {
           </div>
         </div>
       </section>
+
+      <GovernmentActionSection />
 
       {/* Call to action */}
       <section className="rn-cta" aria-labelledby="cta-heading">

@@ -22,6 +22,16 @@ const homeHeroSlides = [
   { src: '/images/protection.child.jpg', caption: 'Child protection' },
 ];
 
+const homeCalendarDate = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Kathmandu',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+  .formatToParts(new Date())
+  .reduce((parts, part) => ({ ...parts, [part.type]: part.value }), {});
+const initialCalendarDate = `${homeCalendarDate.year}-${homeCalendarDate.month}-${homeCalendarDate.day}`;
+
 export const metadata = {
   title: 'Building self-reliant, equitable communities across Nepal',
   description:
@@ -90,7 +100,7 @@ export default function HomePage() {
       <JsonLd key="home-navigation" data={navData} />
       <JsonLd key="home-org" data={organizationSchema} />
       <main className="rn-site">
-        <RnHeroNew images={homeHeroSlides} />
+        <RnHeroNew images={homeHeroSlides} initialCalendarDate={initialCalendarDate} />
 
         <DistrictMapSection />
 

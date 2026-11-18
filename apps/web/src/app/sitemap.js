@@ -19,6 +19,7 @@ export default async function sitemap() {
     { path: '/get-involved/membership', changefreq: 'monthly', priority: 0.6 },
     { path: '/programs', changefreq: 'monthly', priority: 0.7 },
     { path: '/network', changefreq: 'monthly', priority: 0.7 },
+    { path: '/government-actions', changefreq: 'monthly', priority: 0.7 },
   ].map(({ path, changefreq, priority }) => ({
     url: `${base}${path}`,
     lastModified: now,
@@ -143,6 +144,26 @@ export default async function sitemap() {
       priority: 0.4,
     }));
 
+  let governmentActions = [];
+  try {
+    const response = await fetch(`${apiBase}/government-actions`, { cache: 'no-store' });
+    if (response.ok) {
+      const payload = await response.json();
+      governmentActions = Array.isArray(payload?.data) ? payload.data : [];
+    }
+  } catch {
+    // Keep the static sitemap available if the content API is temporarily offline.
+  }
+
+  const governmentActionEntries = governmentActions
+    .filter((action) => action.slug)
+    .map((action) => ({
+      url: `${base}/government-actions/${encodeURIComponent(action.slug)}`,
+      lastModified: action.updated_at || action.published_at || action.created_at || now,
+      changeFrequency: 'yearly',
+      priority: 0.5,
+    }));
+
   return [
     ...staticEntries,
     ...partnerEntries,
@@ -150,5 +171,6 @@ export default async function sitemap() {
     ...galleryEntries,
     ...noticeEntries,
     ...vacancyEntries,
+    ...governmentActionEntries,
   ];
 }

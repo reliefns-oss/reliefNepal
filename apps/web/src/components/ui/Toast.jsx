@@ -14,6 +14,7 @@ function notify() {
 export function toast({ title, description, type = 'success', duration = 5000 }) {
   const id = Date.now() + Math.random();
   const newToast = { id, title, description, type, duration };
+  toasts.length = 0;
   toasts.push(newToast);
   notify();
 
@@ -28,6 +29,12 @@ export function toast({ title, description, type = 'success', duration = 5000 })
   }
 
   return id;
+}
+
+export function clearToasts() {
+  if (toasts.length === 0) return;
+  toasts.length = 0;
+  notify();
 }
 
 export function useToasts() {
@@ -48,7 +55,7 @@ export function useToasts() {
     }
   };
 
-  return { toasts: state, dismiss };
+  return { toasts: state, dismiss, clearToasts };
 }
 
 const icons = {
@@ -119,5 +126,5 @@ export function ToastContainer() {
 }
 
 export function useToast() {
-  return { toast };
+  return { toast, clearToasts };
 }

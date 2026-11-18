@@ -13,6 +13,7 @@ const tabs = [
   ['programs', 'Programs'],
   ['projects', 'Projects'],
   ['stories', 'Impact Stories'],
+  ['government-actions', 'Joint Action'],
   ['gallery', 'Gallery'],
   ['vacancies', 'Vacancies'],
   ['networks', 'Networks'],
@@ -92,9 +93,13 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const [bannerUploadStep, setBannerUploadStep] = useState('');
-  const { toast } = useToast();
+  const { toast, clearToasts } = useToast();
 
   function showMessage(text, tone = 'success') {
+    if (!text?.trim()) {
+      clearToasts();
+      return;
+    }
     toast({
       title: tone === 'success' ? 'Success' : tone === 'error' ? 'Error' : tone === 'warning' ? 'Warning' : 'Info',
       description: text,
@@ -186,7 +191,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!profile) return;
-    if (['gallery', 'vacancies', 'networks', 'notices'].includes(tab)) return;
+    if (['gallery', 'vacancies', 'networks', 'notices', 'stories', 'government-actions'].includes(tab)) return;
     let active = true;
     setRowsLoading(true);
     setRowsLoadError('');
@@ -476,7 +481,7 @@ export default function AdminPage() {
         </header>
 
         <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-forest-200">
-          {tabs.filter(([id]) => profile.role === 'admin' || ['programs', 'projects', 'stories', 'gallery', 'vacancies', 'networks', 'notices', 'procurement', 'board-members'].includes(id)).map(([id, label]) => (
+          {tabs.filter(([id]) => profile.role === 'admin' || ['programs', 'projects', 'stories', 'government-actions', 'gallery', 'vacancies', 'networks', 'notices', 'procurement', 'board-members'].includes(id)).map(([id, label]) => (
             <button key={id} onClick={() => setTab(id)} className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-semibold ${tab === id ? 'border-forest-700 text-forest-900' : 'border-transparent text-slate-500'}`}>{label}</button>
           ))}
         </nav>
@@ -485,7 +490,7 @@ export default function AdminPage() {
           <AdminContentSection type="stories" request={request} />
         )}
 
-        {['programs', 'gallery', 'vacancies', 'networks', 'notices', 'board-members', 'procurement'].includes(tab) && (
+        {['programs', 'gallery', 'vacancies', 'networks', 'notices', 'government-actions', 'board-members', 'procurement'].includes(tab) && (
           <AdminContentSection type={tab} request={request} />
         )}
 

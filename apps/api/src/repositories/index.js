@@ -1,6 +1,7 @@
 export { projectRepository } from './project.repository.js';
 export { galleryRepository } from './gallery.repository.js';
 export { noticeRepository } from './notice.repository.js';
+export { governmentActionRepository } from './government-action.repository.js';
 export { networkRepository } from './network.repository.js';
 export { programRepository } from './program.repository.js';
 export { vacancyRepository } from './vacancy.repository.js';

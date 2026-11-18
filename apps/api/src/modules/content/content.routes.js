@@ -4,6 +4,7 @@ import {
   galleryRepository,
   networkRepository,
   noticeRepository,
+  governmentActionRepository,
   vacancyRepository,
   procurementRepository,
   boardRepository,
@@ -121,6 +122,33 @@ contentRoutes.get('/notices/:slug', async (req, res, next) => {
       return res.status(404).json({ error: { code: 'NOTICE_NOT_FOUND', message: 'Notice not found.' } });
     }
     return res.json({ data: notice });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+contentRoutes.get('/government-actions', async (req, res, next) => {
+  try {
+    const { limit, offset } = req.query;
+    const actions = await governmentActionRepository.findPublished({
+      limit: limit ? Number(limit) : undefined,
+      offset: offset ? Number(offset) : undefined,
+    });
+    return res.json({ data: actions });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+contentRoutes.get('/government-actions/:slug', async (req, res, next) => {
+  try {
+    const action = await governmentActionRepository.findPublishedBySlug(req.params.slug);
+    if (!action) {
+      return res.status(404).json({
+        error: { code: 'GOVERNMENT_ACTION_NOT_FOUND', message: 'Initiative not found.' },
+      });
+    }
+    return res.json({ data: action });
   } catch (error) {
     return next(error);
   }
