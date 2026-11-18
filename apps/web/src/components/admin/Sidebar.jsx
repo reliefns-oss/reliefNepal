@@ -42,7 +42,7 @@ const navigation = [
       { href: '/admin/about', label: 'About Us', icon: Users, badge: null },
       { href: '/admin/work', label: 'Our Work', icon: Briefcase, badge: null },
       { href: '/admin/projects', label: 'Projects & Programs', icon: FolderOpen, badge: null },
-      { href: '/admin/stories', label: 'Stories & News', icon: Newspaper, badge: null },
+      { href: '/admin?tab=stories', label: 'Impact Stories', icon: Newspaper, badge: null },
       { href: '/admin/networks', label: 'Partners & Networks', icon: Building2, badge: null },
       { href: '/admin/impact', label: 'Impact & Statistics', icon: BarChart3, badge: null },
       { href: '/admin/gallery', label: 'Gallery / Media', icon: Image, badge: null },

@@ -1,9 +1,5 @@
 import "./globals.css";
-import Header from "../components/layout/Header.jsx";
-import Marquee from "../components/layout/Marquee.jsx";
-import NoticeVacancyTicker from "../components/layout/NoticeVacancyTicker.jsx";
 import JsonLd from "../components/seo/JsonLd.jsx";
-import { FeedbackButton } from "../components/forms/FeedbackButton";
 import {
   defaultMetadata,
   defaultViewport,
@@ -56,11 +52,7 @@ export default function RootLayout({ children }) {
         >
           Skip to content
         </a>
-        <Marquee />
-        <Header />
-        <NoticeVacancyTicker />
         <div id="main-content">{children}</div>
-        <FeedbackButton />
       </body>
     </html>
   );

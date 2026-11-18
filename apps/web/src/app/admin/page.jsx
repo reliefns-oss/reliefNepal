@@ -12,6 +12,7 @@ import { ToastContainer, useToast } from '../../components/ui/Toast.jsx';
 const tabs = [
   ['programs', 'Programs'],
   ['projects', 'Projects'],
+  ['stories', 'Impact Stories'],
   ['gallery', 'Gallery'],
   ['vacancies', 'Vacancies'],
   ['networks', 'Networks'],
@@ -72,7 +73,12 @@ export default function AdminPage() {
   const [profile, setProfile] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [tab, setTab] = useState('projects');
+  const [tab, setTab] = useState(() => {
+    if (typeof window === 'undefined') return 'projects';
+    return new URLSearchParams(window.location.search).get('tab') === 'stories'
+      ? 'stories'
+      : 'projects';
+  });
   const [rows, setRows] = useState([]);
   const [rowsLoading, setRowsLoading] = useState(false);
   const [rowsLoadError, setRowsLoadError] = useState('');
@@ -470,10 +476,14 @@ export default function AdminPage() {
         </header>
 
         <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-forest-200">
-          {tabs.filter(([id]) => profile.role === 'admin' || ['programs', 'projects', 'gallery', 'vacancies', 'networks', 'notices', 'procurement', 'board-members'].includes(id)).map(([id, label]) => (
+          {tabs.filter(([id]) => profile.role === 'admin' || ['programs', 'projects', 'stories', 'gallery', 'vacancies', 'networks', 'notices', 'procurement', 'board-members'].includes(id)).map(([id, label]) => (
             <button key={id} onClick={() => setTab(id)} className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-semibold ${tab === id ? 'border-forest-700 text-forest-900' : 'border-transparent text-slate-500'}`}>{label}</button>
           ))}
         </nav>
+
+        {tab === 'stories' && (
+          <AdminContentSection type="stories" request={request} />
+        )}
 
         {['programs', 'gallery', 'vacancies', 'networks', 'notices', 'board-members', 'procurement'].includes(tab) && (
           <AdminContentSection type={tab} request={request} />

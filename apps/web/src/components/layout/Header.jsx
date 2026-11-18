@@ -6,7 +6,7 @@ import DesktopNavigation from './DesktopNavigation.jsx';
 import MobileNavigation from './MobileNavigation.jsx';
 
 export default function Header() {
-  return <header className="mt-11 sticky top-11 z-30 border-b border-forest-100 bg-white/95 backdrop-blur">
+  return <header className="border-b border-forest-100 bg-white/95 backdrop-blur">
     <Container className="relative flex h-20 items-center justify-between gap-6">
       <Link href="/" aria-label="Relief Nepal home" className="flex items-center"><Image src="/images/logo.jpg" alt="Relief Nepal" width={230} height={76} priority className="h-auto max-h-16 w-auto object-contain" /></Link>
       <DesktopNavigation />

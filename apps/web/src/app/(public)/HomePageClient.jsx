@@ -16,13 +16,14 @@ import {
 } from 'lucide-react';
 
 const planSectors = [
-  { title: 'Child Protection', icon: ShieldCheck },
-  { title: 'Education', icon: BookOpen },
-  { title: 'Employment and Income', icon: Briefcase },
-  { title: 'Health and Nutrition', icon: HeartPulse },
+  { title: 'Child Protection', icon: ShieldCheck, href: '/programs' },
+  { title: 'Education', icon: BookOpen, href: '/programs' },
+  { title: 'Employment and Income', icon: Briefcase, href: '/programs' },
+  { title: 'Health and Nutrition', icon: HeartPulse, href: '/programs' },
   {
     title: 'Humanitarian Actions and Disaster Preparedness',
     icon: LifeBuoy,
+    href: '/projects',
   },
 ];
 
@@ -33,19 +34,23 @@ const crossCuttingTopics = [
 ];
 
 export default function HomePageClient() {
-  const [projects, setProjects] = useState([]);
-  const [projectState, setProjectState] = useState('loading');
+  const [stories, setStories] = useState([]);
+  const [storiesState, setStoriesState] = useState('loading');
 
   useEffect(() => {
     let active = true;
-    apiRequest('/projects')
+    apiRequest('/notices')
       .then((data) => {
         if (!active) return;
-        setProjects(Array.isArray(data) ? data : []);
-        setProjectState('ready');
+        setStories(
+          Array.isArray(data)
+            ? data.filter((story) => story?.title && story?.slug)
+            : [],
+        );
+        setStoriesState('ready');
       })
       .catch(() => {
-        if (active) setProjectState('error');
+        if (active) setStoriesState('error');
       });
     return () => {
       active = false;
@@ -97,8 +102,8 @@ export default function HomePageClient() {
           </div>
 
           <div className="rn-plan-grid">
-            {planSectors.map(({ title, icon: Icon }, index) => (
-              <article className="rn-plan-card" key={title}>
+            {planSectors.map(({ title, icon: Icon, href }, index) => (
+              <a href={href} className="rn-plan-card" key={title}>
                 <div className="rn-plan-card-top">
                   <span className="rn-plan-icon">
                     <Icon size={27} strokeWidth={1.8} aria-hidden="true" />
@@ -108,7 +113,7 @@ export default function HomePageClient() {
                   </span>
                 </div>
                 <h3>{title}</h3>
-              </article>
+              </a>
             ))}
           </div>
 
@@ -131,58 +136,58 @@ export default function HomePageClient() {
         </div>
       </section>
 
-      {/* Projects */}
+      {/* Impact stories */}
       <section
         className="rn-projects rn-section"
-        aria-labelledby="projects-heading"
+        aria-labelledby="stories-heading"
       >
         <div className="rn-container">
           <div className="rn-section-heading rn-projects-heading">
             <div>
-              <h2 id="projects-heading">Impact Stories</h2>
+              <h2 id="stories-heading">Impact Stories</h2>
             </div>
 
-            <a className="rn-text-link" href="/projects">
-              View all projects{' '}
+            <a className="rn-text-link" href="/stories">
+              View all stories{' '}
               <ChevronRight className="rn-text-link-arrow" aria-hidden="true" />
             </a>
           </div>
 
           <div className="rn-project-grid">
-            {projects.slice(0, 3).map((project, index) => (
+            {stories.slice(0, 3).map((story, index) => (
               <article
                 className="rn-project-card"
-                key={project.id || project.slug}
+                key={story.id || story.slug}
               >
-                {project.banner_url && (
+                {story.image_url && (
                   <a
                     className="rn-project-image"
-                    href={`/projects/${project.slug}`}
+                    href={`/notice/${encodeURIComponent(story.slug)}`}
                   >
-                    <img src={project.banner_url} alt="" loading="lazy" />
+                    <img src={story.image_url} alt="" loading="lazy" />
                     <span className="rn-project-index">0{index + 1}</span>
                   </a>
                 )}
 
                 <div className="rn-project-content">
-                  <span className="rn-project-category">
-                    {project.program?.name || project.status}
-                  </span>
+                  <span className="rn-project-category">Community story</span>
 
                   <h3>
-                    <a href={`/projects/${project.slug}`}>{project.title}</a>
+                    <a href={`/notice/${encodeURIComponent(story.slug)}`}>
+                      {story.title}
+                    </a>
                   </h3>
 
                   <p>
-                    {project.summary ||
-                      'Project information will be added as verified details are published.'}
+                    {story.summary ||
+                      'Read how community-led work is supporting positive change.'}
                   </p>
 
                   <a
                     className="rn-text-link"
-                    href={`/projects/${project.slug}`}
+                    href={`/notice/${encodeURIComponent(story.slug)}`}
                   >
-                    Discover project{' '}
+                    Read story{' '}
                     <ChevronRight
                       className="rn-text-link-arrow"
                       aria-hidden="true"
@@ -191,20 +196,20 @@ export default function HomePageClient() {
                 </div>
               </article>
             ))}
-            {projectState === 'loading' && (
+            {storiesState === 'loading' && (
               <p className="rn-project-empty" role="status">
-                Loading published projects…
+                Loading published stories…
               </p>
             )}
-            {projectState === 'error' && (
+            {storiesState === 'error' && (
               <p className="rn-project-empty" role="status">
-                Published project information is temporarily unavailable. Please
+                Published stories are temporarily unavailable. Please
                 check back soon.
               </p>
             )}
-            {projectState === 'ready' && projects.length === 0 && (
+            {storiesState === 'ready' && stories.length === 0 && (
               <p className="rn-project-empty">
-                Published projects will appear here as verified content becomes
+                Published stories will appear here as verified content becomes
                 available.
               </p>
             )}

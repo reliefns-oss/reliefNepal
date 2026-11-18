@@ -1,12 +1,10 @@
 .bar {
-  position: sticky;
-  top: 7.75rem;
-  z-index: 20;
   display: flex;
   min-height: 2.75rem;
   align-items: center;
   gap: 1rem;
   overflow: hidden;
+  border-top: 1px solid #d6e5dc;
   border-bottom: 1px solid #d6e5dc;
   background: #f3f8f4;
   color: #173a28;

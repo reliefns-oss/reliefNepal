@@ -1,8 +1,7 @@
-import RnHero from '../../components/home/RnHero.jsx';
+import RnHeroNew from '../../components/home/RnHeroNew.jsx';
 import DistrictMapSection from '../../components/geography/DistrictMapSection.jsx';
 import HomePageClient from './HomePageClient';
 import PartnerMarquee from '../../components/layout/PartnerMarquee.tsx';
-import ForexSection from '../../components/home/ForexSection.jsx';
 import JsonLd from '../../components/seo/JsonLd.jsx';
 import {
   organizationSchema,
@@ -91,11 +90,9 @@ export default function HomePage() {
       <JsonLd key="home-navigation" data={navData} />
       <JsonLd key="home-org" data={organizationSchema} />
       <main className="rn-site">
-        <RnHero images={homeHeroSlides} />
+        <RnHeroNew images={homeHeroSlides} />
 
         <DistrictMapSection />
-
-        <ForexSection />
 
         <HomePageClient />
 

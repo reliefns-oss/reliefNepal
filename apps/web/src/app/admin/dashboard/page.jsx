@@ -243,7 +243,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="grid gap-3 sm:grid-cols-2">
                 <QuickActionButton label="Create Project" href="/admin/projects/new" icon={Plus} variant="primary" />
-                <QuickActionButton label="Publish Story" href="/admin/stories/new" icon={Newspaper} />
+                <QuickActionButton label="Publish Story" href="/admin?tab=stories" icon={Newspaper} />
                 <QuickActionButton label="Add Partner" href="/admin/networks/new" icon={Building2} />
                 <QuickActionButton label="Upload Report" href="/admin/reports/new" icon={ExternalLink} />
                 <QuickActionButton label="View Messages" href="/admin/messages" icon={Mail} />

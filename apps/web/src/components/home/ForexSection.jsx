@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowUp, ArrowDown, Minus, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 
 const MAJOR_CURRENCIES = [
   { code: 'USD', name: 'US Dollar', symbol: '$' },
@@ -21,11 +21,21 @@ const MAJOR_CURRENCIES = [
   { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM' },
 ];
 
-export default function ForexSection() {
+const CURRENCY_LABELS = {
+  USD: 'US Dollar',
+  CAD: 'Canadian Dollar',
+  SGD: 'Singapore Dollar',
+  INR: 'Indian Rupee',
+  EUR: 'Euro',
+};
+
+export default function ForexSection({ compact = false, currencies = null }) {
   const [rates, setRates] = useState({});
   const [lastUpdated, setLastUpdated] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const displayCurrencies = currencies || MAJOR_CURRENCIES.map(c => c.code);
 
   const fetchRates = async () => {
     try {
@@ -35,9 +45,8 @@ export default function ForexSection() {
       if (!response.ok) throw new Error('Failed to fetch rates');
       const data = await response.json();
 
-      // Filter to major currencies
       const filteredRates = {};
-      MAJOR_CURRENCIES.forEach(({ code }) => {
+      displayCurrencies.forEach(code => {
         if (data.rates[code]) {
           filteredRates[code] = data.rates[code];
         }
@@ -54,7 +63,6 @@ export default function ForexSection() {
 
   useEffect(() => {
     fetchRates();
-    // Refresh every 5 minutes
     const interval = setInterval(fetchRates, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
@@ -67,22 +75,59 @@ export default function ForexSection() {
 
   if (error) {
     return (
-      <section className="py-12 bg-slate-50" aria-labelledby="forex-heading">
-        <div className="container mx-auto px-4">
-          <div className="text-center text-red-600">
-            <p>Unable to load forex rates. Please try again later.</p>
-            <button
-              onClick={fetchRates}
-              className="mt-2 text-sm text-forest-700 underline hover:text-forest-900"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </section>
+      <div className="text-center text-red-600 py-4">
+        <p className="text-sm">Unable to load rates</p>
+        <button onClick={fetchRates} className="mt-1 text-xs underline hover:text-forest-900">Retry</button>
+      </div>
     );
   }
 
+  if (compact) {
+    return (
+      <div className="rn-hero-forex-compact" aria-label="Foreign exchange rates">
+        <h3>Exchange Rates</h3>
+        {loading ? (
+          <div className="space-y-2">
+            {displayCurrencies.slice(0, 5).map((code) => (
+              <div key={code} className="h-8 bg-white/5 rounded animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          <table role="table">
+            <thead>
+              <tr>
+                <th>Currency</th>
+                <th className="currency-rate">1 NPR =</th>
+                <th className="currency-inverse">1 Unit = NPR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {displayCurrencies.map((code) => {
+                const rate = rates[code];
+                if (!rate) return null;
+                const inverseRate = (1 / rate).toFixed(2);
+                const label = CURRENCY_LABELS[code] || code;
+                return (
+                  <tr key={code}>
+                    <td className="currency-code">{code}</td>
+                    <td className="currency-rate">{formatRate(rate)}</td>
+                    <td className="currency-inverse">{inverseRate}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+        {!loading && lastUpdated && (
+          <p className="mt-3 text-xs text-white/40 text-center">
+            Updated {new Date(lastUpdated).toLocaleDateString('en-NP', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // Full page version
   return (
     <section className="py-12 bg-white border-y border-slate-200" aria-labelledby="forex-heading">
       <div className="container mx-auto px-4">
@@ -111,11 +156,7 @@ export default function ForexSection() {
               className="flex items-center gap-2 text-sm text-forest-700 hover:text-forest-900 font-medium"
               aria-label="Refresh forex rates"
             >
-              <RefreshCw
-                size={16}
-                className={`${loading ? 'animate-spin' : ''}`}
-                aria-hidden="true"
-              />
+              <RefreshCw size={16} className={`${loading ? 'animate-spin' : ''}`} aria-hidden="true" />
               Refresh
             </button>
           </div>
@@ -148,10 +189,7 @@ export default function ForexSection() {
                   if (!rate) return null;
                   const inverseRate = (1 / rate).toFixed(2);
                   return (
-                    <tr
-                      key={code}
-                      className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
-                    >
+                    <tr key={code} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
                           <span className="w-8 h-8 rounded-full bg-forest-100 flex items-center justify-center text-forest-700 font-bold text-xs">
@@ -179,21 +217,11 @@ export default function ForexSection() {
 
         <p className="mt-6 text-xs text-slate-500 text-center">
           Rates are indicative and sourced from{' '}
-          <a
-            href="https://www.exchangerate-api.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-forest-700 underline hover:text-forest-900"
-          >
+          <a href="https://www.exchangerate-api.com/" target="_blank" rel="noopener noreferrer" className="text-forest-700 underline hover:text-forest-900">
             exchangerate-api.com
           </a>
           {' '}(based on NRB published rates). For official transactions, please check with your bank or{' '}
-          <a
-            href="https://www.nrb.org.np/forex/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-forest-700 underline hover:text-forest-900"
-          >
+          <a href="https://www.nrb.org.np/forex/" target="_blank" rel="noopener noreferrer" className="text-forest-700 underline hover:text-forest-900">
             Nepal Rastra Bank
           </a>
           {' '}official website.

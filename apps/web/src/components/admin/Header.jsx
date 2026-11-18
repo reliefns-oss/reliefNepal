@@ -29,12 +29,12 @@ const userMenuItems = [
 
 const notificationItems = [
   { label: 'New project created', time: '2 min ago', unread: true, href: '/admin/projects/1' },
-  { label: 'Story published successfully', time: '15 min ago', unread: true, href: '/admin/stories/5' },
+  { label: 'Story published successfully', time: '15 min ago', unread: true, href: '/admin?tab=stories' },
   { label: 'New contact message received', time: '1 hour ago', unread: false, href: '/admin/messages' },
   { label: 'Monthly report generated', time: '3 hours ago', unread: false, href: '/admin/reports' },
 ];
 
-export function Header({ sidebarCollapsed, onToggleSidebar, user, onSignOut, className = '' }) {
+export function Header({ user, onSignOut, className = '' }) {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -64,21 +64,9 @@ export function Header({ sidebarCollapsed, onToggleSidebar, user, onSignOut, cla
   });
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-[200] h-16 bg-white/95 backdrop-blur-sm border-b border-border-light transition-all duration-300 ${className}`} style={{ left: sidebarCollapsed ? '72px' : '280px' }}>
+    <header className={`fixed top-0 left-0 right-0 z-[200] h-16 bg-white/95 backdrop-blur-sm border-b border-border-light ${className}`}>
       <div className="h-full px-4 sm:px-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggleSidebar}
-            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            className="lg:hidden"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </Button>
-
           <nav className="hidden sm:flex items-center gap-1" aria-label="Breadcrumb">
             <Link href="/admin" className="flex items-center gap-1 px-2 py-1.5 text-sm text-text-tertiary hover:text-text-primary rounded-lg transition-colors" aria-label="Dashboard">
               <LayoutDashboard className="w-4 h-4" />

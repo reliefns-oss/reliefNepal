@@ -1,73 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sidebar, MobileSidebar } from './Sidebar';
 import { Header } from './Header';
 import { Button } from '@/components/ui';
 import '@/components/ui/design-tokens.css';
 
 export function AdminLayout({ children, user, onSignOut, className = '' }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem('admin-sidebar-collapsed');
-    if (saved !== null) {
-      setSidebarCollapsed(JSON.parse(saved));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem('admin-sidebar-collapsed', JSON.stringify(sidebarCollapsed));
-    }
-  }, [sidebarCollapsed, mounted]);
-
-  const handleToggleSidebar = () => {
-    setSidebarCollapsed((prev) => !prev);
-  };
-
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-bg-primary">
-        <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-border-light" />
-        <main className="pt-16 min-h-[calc(100vh-64px)]" style={{ marginLeft: '280px' }}>
-          <div className="p-6" role="status" aria-label="Loading admin layout">
-            <div className="max-w-4xl mx-auto space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-8 bg-bg-tertiary rounded animate-pulse" />
-              ))}
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-bg-primary">
-      <Sidebar collapsed={sidebarCollapsed} onToggle={handleToggleSidebar} />
-      <MobileSidebar isOpen={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)} />
-      <Header
-        sidebarCollapsed={sidebarCollapsed}
-        onToggleSidebar={() => {
-          if (window.innerWidth < 1024) {
-            setMobileSidebarOpen(true);
-          } else {
-            handleToggleSidebar();
-          }
-        }}
-        user={user}
-        onSignOut={onSignOut}
-      />
+      <Header user={user} onSignOut={onSignOut} />
       <main
-        className="admin-main pt-16 min-h-[calc(100vh-64px)] transition-all duration-300"
-        style={{
-          marginLeft: sidebarCollapsed ? '72px' : '280px',
-        }}
+        className="admin-main min-h-[calc(100vh-64px)] pt-16"
       >
         <motion.div
           initial={{ opacity: 0, y: 10 }}

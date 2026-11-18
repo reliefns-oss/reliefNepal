@@ -101,6 +101,31 @@ const definitions = {
     ],
     label: (item) => item.publication_status,
   },
+  stories: {
+    heading: 'Impact Stories',
+    singular: 'story',
+    path: 'notices',
+    blank: {
+      slug: '',
+      title: '',
+      summary: '',
+      body: '',
+      attachment_url: '',
+      image_url: null,
+      image_public_id: null,
+      publication_status: 'draft',
+    },
+    fields: [
+      ['title', 'Title', 'text'],
+      ['slug', 'URL slug (generated from title; editable)', 'slug'],
+      ['image_url', 'Story photo', 'notice-photo'],
+      ['summary', 'Summary', 'textarea'],
+      ['body', 'Story details', 'textarea'],
+      ['attachment_url', 'Attachment URL (optional)', 'url'],
+      ['publication_status', 'Publication', 'select:draft,published,archived'],
+    ],
+    label: (item) => item.publication_status,
+  },
   vacancies: {
     heading: 'Vacancies',
     singular: 'vacancy',
@@ -273,6 +298,7 @@ const requiredFields = {
     'description',
   ],
   notices: ['title', 'slug'],
+  stories: ['title', 'slug'],
   vacancies: [
     'title',
     'slug',
@@ -1124,7 +1150,7 @@ export default function AdminContentSection({ type, request }) {
                   )}
                 </div>
               );
-            if (type === 'notices' && key === 'image_url')
+            if (['notices', 'stories'].includes(type) && key === 'image_url')
               return (
                 <div key={key} className="mt-4">
                   <span className="block text-sm font-semibold">{label}</span>
