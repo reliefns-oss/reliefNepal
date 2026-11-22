@@ -1,0 +1,13 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerEnabled on
+PassengerAppRoot "/home/reliefnepalorg/api.reliefnepal.org.np"
+PassengerBaseURI "/"
+PassengerAppType node
+PassengerStartupFile server.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+
+Options -Indexes
+
+<FilesMatch "^\.env">
+  Require all denied
+</FilesMatch>

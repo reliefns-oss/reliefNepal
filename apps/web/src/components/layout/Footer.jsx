@@ -25,12 +25,12 @@ const offices = [
     address: 'Kamalamai Municipality-6, Sindhuli',
     phone: '+977-047-520915',
     email: 'info@reliefnepal.org.np',
-    secondaryEmail: 'dr.paudel@reliefnepal.org.np',
+    secondaryEmail: 'durga.paudel@reliefnepal.org.np',
   },
   {
     label: 'Secretariat Office',
     address: 'Mahalaxmi Municipality-10, Lalitpur',
-    phone: '+977-9851001193',
+    phone: '+977-9844003785',
     email: 'info@reliefnepal.org.np',
   },
 ];
